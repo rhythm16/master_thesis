@@ -1,0 +1,42 @@
+name: build pdf
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout `main`
+    - uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      run: sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo -E apt-get install -y texlive-science texlive-fonts-extra texlive-bibtex-extra latexmk make texlive-xetex
+
+    - name: Build
+      run: make && mv main.pdf tmp.pdf
+      
+    - name: Checkout `build`
+      uses: actions/checkout@v3
+      with:
+        ref: build
+        clean: false
+        
+    - name: Trust Directory
+      run: git config --global --add safe.directory $GITHUB_WORKSPACE
+      
+    - name: Update
+      run: mv tmp.pdf main.pdf
+      
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: auto build - ${{ github.sha }}
+        file_pattern: main.pdf
