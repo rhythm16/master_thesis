@@ -2,7 +2,249 @@
 
 \chapter{Background and Related Work}
 
-\section{Rust}
+\section{The Rust Programming Language}
+Rust, compared to C,
+is a relatively young programming language aiming to be safe and fast.
+It enables programs to be memory-safe without requiring programmers to
+painstakingly manage memory, as in traditional languages (e.g., C/C++).
+Unlike other memory-safe languages (e.g., Python, Go, etc.),
+Rust does not leverage garbage collection mechanisms
+to ensure memory safety.
+Instead, it introduces the concepts of lifetimes and ownership
+to mandate the programmer to follow specific rules.
+This paradigm of statically enforcing programming rules
+empowers Rust to perform comparably to C since Rust's compiler has complete
+control over the code that
+runs during runtime and can optimize it accordingly.
+Additionally, Rust's safety rules ensure that
+no memory safety bugs will be present when satisfied,
+and the compiler automatically checks and prevents any violation of these rules.
+
+\textbf{Ownership and Lifetimes.}
+In Rust, each piece of data is said to be \textit{owned} by a single
+variable, and it is automatically \textit{dropped} (freed) when the
+variable's \textit{lifetime} ends. A variable's lifetime ends as the program
+control flow exits the block in which the variable is declared.
+In \autoref{lst:lifetime}, \code{y}'s lifetime starts at line 5 and ends at
+line 7 as the block closes. Hence, the \code{println!} macro is unable to find
+the value \code{y}, whose lifetime has already ended.
+Ownership can be transferred or \textit{moved}. For example,
+assigning the owning variable to a new variable moves the ownership of the
+data to the new variable. And passing the variable into a function also moves
+the data ownership into the function.
+In both situations, the original variable returns to the uninitialized state,
+and using it would result in a compilation error.
+
+\begin{listing}[hbtp]
+    \begin{minted}{rust}
+// this code sample does *not* compile
+{
+  let x = 1;
+  {            // create new scope
+    let y;
+    y = x;
+  }            // y is dropped
+
+  // compilation error, y's lifetime has ended
+  println!("The value of 'y' is {}.", y);
+}
+    \end{minted}
+    \caption{Rust lifetime example}
+    \label{lst:lifetime}
+    \vspace{-0.2cm}
+\end{listing}
+
+\textbf{Borrowing.}
+Ownership lacks the flexibility of argument passing.
+Rust addresses this by \textit{borrowing},
+a mechanism that allows accessing data without gaining ownership.
+A variable can borrow ownership from another variable to acquire a
+\textit{reference} to the data. References can be divided into two categories,\textit{shared}
+references and \textit{exclusive} references. The reference can only be read
+and not modified with a shared reference. Nevertheless, multiple shared
+references for a specific value can be held simultaneously.
+On the other hand, exclusive references allow reading from and modifying the
+value. However, having any other kind of reference active simultaneously for
+that value is not permitted.
+
+In summary, Rust's borrowing rule enforces \textit{aliasing xor mutability}
+meaning there can be multiple shared references or a single exclusive
+reference.
+In \autoref{lst:borrowingrule}, line 6 would not compile because it tries to create
+a mutable reference (\code{z}) to \code{x}, while \code{y} already borrowed
+\code{x} immutably. \code{y}'s lifetime ends on line 8 as it gets used for the
+last time; therefore \code{z} can be created on line 10 and used on line 11.
+However, if line 13 is uncommented, \code{y}'s lifetime would be extended to
+line 13, making the creation of \code{z} on line 10 break the borrowing rules.
+
+\begin{listing}[hbtp]
+    \begin{minted}{rust}
+{
+  let mut x = vec![1, 2, 3];
+  let y = &x; // immutable borrow of x
+
+  // this line would fail to compile because x is already borrowed immutably by y
+  /* let z = &mut x; */
+
+  println!("x = {:?}", x); // This line works
+  println!("y = {:?}", y); // This line works
+
+  let z = &mut x; // mutable borrow of x
+  z.push(4);
+
+  // this line would fail to compile because x is borrowed mutably by z
+  /* println!("y = {:?}", y); */
+}
+    \end{minted}
+    \caption{Rust enforces \textit{aliasing xor mutability}}
+    \label{lst:borrowingrule}
+    \vspace{-0.2cm}
+\end{listing}
+
+\textbf{unsafe Rust.}
+Rust's safety checks are sometimes too restrictive regarding tasks like
+low-level hardware access or special optimizations. These operations are
+inherently unsafe and hence impossible to follow the rules mandated by Rust.
+However, they are still necessary for low-level software such as
+hypervisors. To provide flexibility for these operations, Rust allows
+parts of the program to opt out of its safety checks via the \textit{unsafe}
+keyword. Traits, functions, and code blocks can be marked as unsafe to disable
+the checks that the compiler would normally enforce. However, using unsafe code
+also means that the responsibility for ensuring memory safety is shifted from
+the compiler to the programmer. Therefore, it is crucial to exercise
+caution when using unsafe code to avoid introducing bugs or security
+vulnerabilities.
+
+\textbf{Interior unsafe.}
+While most low-level code is written in unsafe code, Rust introduces
+the concept of \textit{interior unsafe}~\cite{ruststudy}. A function is considered
+interior unsafe if it exposes a safe interface but contains unsafe blocks
+in implementation. This allows unsafe operations to be encapsulated
+into safe abstractions. For instance, in
+\autoref{lst:interiorunsafe}, Rust's \code{replace} function can be
+called by safe Rust, but it is implemented using unsafe raw pointer operations.
+At line 6, \code{ptr::read} is used to copy a bit-wise value from \code{dest}
+into \code{result} without moving it, and at line 7, \code{ptr::write} overwrites
+the memory location pointed to by \code{dest} with the given value \code{src}
+without reading or dropping the old value. Lastly, at line 8, \code{result} is
+returned to the function's caller.
+
+\begin{listing}[hbtp]
+    \begin{minted}{rust}
+pub const fn replace<T>(dest: &mut T, src: T) -> T {
+  // SAFETY: We read from `dest` but directly write `src` into it afterward,
+  // such that the old value is not duplicated. Nothing is dropped and
+  // nothing here can panic.
+  unsafe {
+    let result = ptr::read(dest);
+    ptr::write(dest, src);
+    result
+  }
+}
+    \end{minted}
+    \caption{interior unsafe in Rust's \code{replace} function}
+    \label{lst:interiorunsafe}
+    \vspace{-0.2cm}
+\end{listing}
+
+This leads to a design practice that interior unsafe functions should provide
+the necessary checks that prevent the unsafe code from producing any undefined
+behavior or memory safety bugs.
+The callee in the safe world hence bears no responsibility to ensure safety.
+
+\textbf{Interior Mutability.}
+Mutating the underlying data via an immutable reference
+is forbidden in Rust.
+However, this might be too restrictive for
+implementing efficient algorithms or data structures.
+For example, programmers might want to add a cache
+in a read-only search data structure
+to optimize the search time.
+Nevertheless, updating the state of the cache implies
+the need for mutability,
+which violates the read-only constraint.
+Hence, we need the ability to mutate states even under a read-only scene.
+To address this issue,
+the Rust standard library provides some special types
+that can mutate the underlying data
+even if we only have read-only access to the data holder.
+This design pattern is known as Interior Mutability.
+Implementing these types requires \code{unsafe} operations
+to bend Rust's usual rules that govern mutation and borrowing.
+To avoid violating the virtue of the Rust safety assumptions,
+these types ensure that the borrowing rules,
+i.e., one mutable borrower at the same time
+and no mutable borrowers when read-only borrowers exist,
+will be followed at runtime.
+If these rules get violated,
+the implementation of these types has the responsibility
+to stop the behavior to avoid safety issues.
+For example, the type \code{Mutex} in Rust is a type that provides
+interior mutability.
+It uses a lock to ensure that
+only one borrower of the inner data can appear simultaneously
+to enforce safe mutation of the inner data, even without explicit mutability to \code{Mutex}.
+More precisely, when attempting to borrow data that has already been borrowed,
+the \code{Mutex} enforces a busy wait until the data is returned,
+thereby allowing only one borrower at a time.
+However, if a thread borrows the inner data of \code{Mutex} while it is already borrowing it,
+\code{Mutex} will wait forever, i.e., result in a self-deadlock.
+\footnote{This is the behavior when using \texttt{\textcolor{gray}Mutex} on Linux.
+On Windows, \texttt{\textcolor{gray}Mutex} might panic.}
+
+\textbf{Generics and Traits.}
+In addition to the safety mechanisms, Rust, as a modern programming language,
+provides handy features to make programming easier.
+\code{Generic} allows code to work with type parameters,
+reducing the effort of writing similar code for multiple types.
+For example, using generics, the \code{Mutex} type can
+hold and lock any arbitrary type.
+Rust traits are properties or interfaces that can be implemented on types; traits typically require the implementing type
+to supply function implementations for its trait methods.
+Additionally, combined with \code{Generic},
+a trait can be treated as a restriction on type specifications such as function arguments or struct fields.
+The restriction is called a \textit{trait bound}.
+For example, the \code{Clone} trait requires the implementing type
+to provide implementations for its \code{clone} and \code{clone\_from} functions
+to make copies of themselves.
+A \code{Generic} function or type can use a trait bound to
+require its type argument to implement \code{Clone},
+so that it can invoke the \code{clone} function that the argument implements.
+
+\textbf{Graceful Error Handling.}
+Rust offers a graceful approach to error handling.
+The \code{Result<T, E>} and \code{Option<T>} types in Rust
+explicitly admit the possibility of errors.
+\code{Re\-su\-lt} represents the outcome as either \code{Ok(T)} or \code{Err(E)},
+with \code{T} denoting the desired result
+and \code{E} representing the error reason.
+Programmers are obligated to handle \code{E} when accessing \code{T},
+and not doing so would result in a compilation error.
+To simplify error handling,
+Rust provides a convenient syntactic sugar,
+the \code{?} operator.
+It permits the retrieval of \code{T} from \code{Result} if it is \code{Ok(T)},
+or early return of \code{E} if it is \code{Err(E)}.
+Similarly, \code{Option} simplifies error handling with two possibilities:
+\code{Some(T)} or \code{None}, where \code{None} can signify a trivial error.
+These types prevent unexpected errors
+when accessing a potentially non-existing value in the program.
+
+\textbf{Copy and Drop Traits.}
+Some traits in Rust have intrinsic meaning to the compiler. For example, the
+\code{Drop} trait tells the compiler that a type has special freeing code, and
+the \code{Drop} trait's \code{drop} function should be invoked when an instance
+of the type goes out of scope. And the \code{Copy} trait, when implemented for
+a type indicates that the type should be byte-by-byte copied when the
+assignment (\code{=}) operator is used instead of Rust's typical semantic
+of moving the ownership to the new variable. Interestingly, Rust forbids a type
+from being \code{Drop} and \code{Copy} simultaneously, the designers of the
+language observed that if a type requires special deallocating code (the
+\code{drop} function), then it should also require a special copying function,
+rather than just copying it byte-by-byte. For instance, a type that holds a
+reference to the heap requires a \code{drop} function that frees the data
+pointed to by the reference, copying the object of the type in a byte-by-byte
+manner introduces risks of double-free, use-after-free, etc.
 
 \section{VM Protection}
 

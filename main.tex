@@ -12,6 +12,17 @@
   doi       = true,                 % doi = true | false
 ]{ntuthesis}
 
+\usepackage{minted}
+\setminted{
+    linenos,
+    breaklines,
+    framesep=0pt,
+    fontsize=\scriptsize,
+    numbersep=5pt,
+    xleftmargin=5pt,
+}
+
+\usepackage{listings}
 \newcommand{\rustsec}{KrustVM}
 \newcommand{\rustcore}{Rcore}
 \definecolor{CodeGray}{RGB}{60, 60, 60}
