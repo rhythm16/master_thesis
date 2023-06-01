@@ -2,3 +2,81 @@
 
 \chapter{Introduction}
 
+Hypervisors are essential to cloud computing. They manage the hardware
+resources to provide the virtual machine (VMs) abstraction and host
+these VMs in the cloud.
+The widely used commodity
+hypervisors, such as KVM~\cite{kivity07kvm} or Hyper-V~\cite{hyperv},
+include a large and complex TCB to satisfy users' requirements in
+performance and functionality. These hypervisors were written in unsafe
+languages like C, making them vulnerable to safety bugs, such as
+out-of-bound memory access and use-after-free. For example, KVM
+integrates an entire Linux OS kernel inside its TCB. Attackers that
+successfully exploit hypervisor vulnerabilities may gain the ability
+to steal or modify secret VM data.
+
+Previous work~\cite{hypsec} has retrofitted commodity hypervisors into a small
+trusted core that enforces resource access control to ensure the
+confidentiality and integrity of VM data against hypervisor and host operating
+system exploits. However, the security of the whole system still depends on the
+implementation of the small trusted TCB. Any vulnerability in the trusted TCB
+can void the guarantees of VM data confidentiality and integrity.
+While~\cite{sekvm} extended the work of~\cite{hypsec} by formally verifying the
+smaller TCB, the approach is not scalable since all code modifications
+including the addition of new features, or code refactoring, requires a new
+proof.
+
+Rust is an emerging programming language that ensures strong memory safety
+guarantees at compile time while offering performance efficiency.
+Its distinctive ownership and lifetime system
+effectively addresses potential safety issues that programmers may encounter.
+Further, similar to programming languages like C, Rust allows developers to
+directly manage low-level systems resources such as memory. Due to these
+attributes, various previous work has adopted Rust to implement systems
+software with critical security and performance requirements, including
+operating systems~\cite{NrOS, Redleaf, TockOS, theseus},
+hypervisors~\cite{DuVisor, RustyHermit}, web browsers~\cite{servo},
+and TEEs~\cite{rustsgx,rustee}.
+There has been recent adoption of Rust in the mainline Linux kernel. However,
+instead of replacing the existing Linux kernel code written in C with Rust,
+the current efforts were limited to developing new Rust-based device drivers.
+
+Our work leverages the Rust programming language and migrate SeKVM \cite{sekvm},
+a secure Linux KVM hypervisor from C to Rust, so that the resulting hypervisor
+benefits from the strong safety guarantees that Rust automatically provides.
+Our implementation, \rustsec{}, incorporates a small TCB called \rustcore{} to
+protect VM confidentiality and integrity against the large and untrusted
+hypervisor codebase that encompasses KVM’s host Linux kernel.
+We identified and overcame the challenges that arose when trying to
+incorporate a Rust TCB inside Linux \todo{TODO: elaborate}.
+We also redesigned the \rustcore{} TCB to minimize the amount of unsafe Rust,
+and enclosed the unsafe code within a safe abstraction and exposed a safe API
+in order to implement complex functionalities in safe Rust, including CPU,
+memory, VM boot protection, VM exit, and hypercall handlers.
+Further, Rust’s type system is leveraged to ensure spatial memory safety of
+\rustcore{}’s memory accesses by dividing physical memory into multiple
+disjoint regions and guaranteeing all memory accesses done by Rcore is located
+in the predefined regions.
+This is achieved with customized Rust types for each memory region that
+enforces bound-check to accesses, and mandating that \rustcore{} access a
+memory region via each corresponding type.
+
+% describe the benefits
+\rustsec{} is the first secure Linux/KVM hypervisor written in Rust.
+We spent less than one person year migrating SeKVM into \rustsec{}.
+By migrating a C-based hypervisor to a Rust-based implementation,
+we shift the responsibility of human auditing to the compiler.
+This results in safer code and a more straightforward development process.
+Performance evaluation of \rustsec{} on real Arm64 hardware shows that
+\rustsec{} incurs modest performance overhead to application workloads
+compared to mainline KVM and SeKVM. We demonstrate the practicality of
+securing an existing commodity hypervisor by a C-to-Rust migration.
+
+The rest of the paper will be organized as follows. Background and related work
+will be discussed in \autoref{sec:bgrw}. The migration process of \rustsec{}
+and the techniques used are described in \autoref{sec:migration}.
+\autoref{sec:securercore} presents how we utilize Rust's safety features to
+design and secure \rustcore{} memory accesses.
+Evaluation of \rustsec{} and its comparison with mainline KVM and SeKVM is
+covered in \autoref{sec:eval}. At last, we conclude the paper in
+\autoref{sec:conclusions}.
