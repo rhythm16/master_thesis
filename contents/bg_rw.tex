@@ -1,6 +1,23 @@
 % !TeX root = ../main.tex
+%\raggedbottom
 
 \chapter{Background and Related Work}
+\label{sec:bgrw}
+
+\section{VM Protection}
+\todo{TODO: WIP, and introduce \rustsec{} design here.}
+Various previous work~\cite{lisosp21,zhang2011cloudvisor,zeyu20usenix,pkvm,fidelius-hpca18,sekvm}
+redesigned the hypervisor to protect VMs. Unlike our work, none of them used
+Rust to secure their hypervisor implementation.
+\rustsec{} and SeKVM~\cite{sekvm} both leveraged an earlier design~\cite{hypsec}
+to retrofit and secure KVM, providing the same level of VM protection. SeKVM
+included a formally verified core to protect VMs against an untrusted host Linux
+kernel, while \rustsec{} relies on a Rust-based \rustcore{} to protect VMs.
+Formal verification of the concurrent C-based SeKVM core requires significant effort.
+The authors took two person-years to complete the correctness and security proofs.
+In contrast, our Rust-based implementation took less than one person-year while
+ensuring properties verified systems provide, including memory safety,
+data race, and deadlock freedom.
 
 \section{The Rust Programming Language}
 Rust, compared to C,
@@ -245,6 +262,4 @@ rather than just copying it byte-by-byte. For instance, a type that holds a
 reference to the heap requires a \code{drop} function that frees the data
 pointed to by the reference, copying the object of the type in a byte-by-byte
 manner introduces risks of double-free, use-after-free, etc.
-
-\section{VM Protection}
 
