@@ -1,0 +1,26 @@
+\chapter{\rustsec{} Migration}
+
+\section{Integration with Linux}
+
+challenge: Linux 5.15 does not include Rust support
+
+solution: our way of source code organization, build system integration,
+how we link Rust and C, data layout issues, etc.
+
+\section{Hardware Enablement}
+
+we chose RPI4B to verify our implementation on real hardware
+
+challenge: linker script allocation does not work for RPI4B
+
+solution: \code{memblock}
+
+\section{Code Migration}
+
+challenge: difficult to do a top-down design due to the difficulty to debug
+and complexity of a hypervisor (is this challenge kinda weak?)
+
+solution: two pass method, first function-by-function rewrite, then remove
+unsafe and redesign after we have a working Rust hypervisor, and leverage
+Rust to achieve a stronger memory region isolation guarantee.
+
