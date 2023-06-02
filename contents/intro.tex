@@ -55,10 +55,10 @@ in order to implement complex functionalities in safe Rust, including CPU,
 memory, VM boot protection, VM exit, and hypercall handlers.
 Further, Rust’s type system is leveraged to ensure spatial memory safety of
 \rustcore{}’s memory accesses by dividing physical memory into multiple
-disjoint regions and guaranteeing all memory accesses done by Rcore is located
+disjoint regions and guaranteeing all memory accesses done by Rcore are located
 in the predefined regions.
 This is achieved with customized Rust types for each memory region that
-enforces bound-check to accesses, and mandating that \rustcore{} access a
+enforces bound-check to accesses, and mandating that \rustcore{} accesses a
 memory region via each corresponding type.
 
 % describe the benefits
