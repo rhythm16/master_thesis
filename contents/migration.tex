@@ -1,6 +1,29 @@
 \chapter{\rustsec{}: An SeKVM Rust Rewrite}
 \label{sec:migration}
 
+%We want to rewrite SeKVM in Rust.
+%We first forward port SeKVM from 4.18 to 5.15, this is to use newer features
+%e.g. LTO.
+%Then we employ the two pass method.
+
+Our goal is to enhance the security of the trusted \secore{} in SeKVM by
+rewriting it in Rust. We first forward ported SeKVM from its original
+Linux 4.18 version to the newest long term support version Linux 5.15 at the
+time of development.
+By forward porting we benefit from Linux's advancements including performance
+optimizations such as Link-Time-Optimization (LTO) and energy aware scheduling.
+And new kernel security features including \code{clang} shadow call stacks,
+branch target identification, control flow integrity (CFI), ARM Memory Tagging
+Extension (MTE), ARM pointer authentication, and randomized stack offset per
+syscall.
+
+%to take advantage of various new kernel features, for
+%example  for better performance, ARM Pointer Authentication (5.0), Energy Aware Scheduling (5.0)
+%clang shadow call stack, branch target identification (5.8), MTE (5.10), clang CFI (5.13), randomized stack offset per syscall (5.13)
+
+This chapter describes the challenges that arose when trying to rewrite
+\secore{} in Rust, and the techniques we employed to solve them.
+
 \section{Integration with Linux}
 
 challenge: Linux 5.15 does not include Rust support
