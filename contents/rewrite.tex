@@ -21,6 +21,8 @@ syscall.
 %example  for better performance, ARM Pointer Authentication (5.0), Energy Aware Scheduling (5.0)
 %clang shadow call stack, branch target identification (5.8), MTE (5.10), clang CFI (5.13), randomized stack offset per syscall (5.13)
 
+Once the forward port of SeKVM to Linux 5.15 is ready, we can finally rewrite
+the implementation in Rust.
 This chapter describes the challenges that arose when trying to rewrite
 \secore{} in Rust, and the techniques we employed to solve them.
 
