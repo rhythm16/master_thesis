@@ -9,8 +9,12 @@
 %Various previous work~\cite{lisosp21,zhang2011cloudvisor,zeyu20usenix,pkvm,fidelius-hpca18,sekvm}
 %redesigned the hypervisor to protect VMs.
 Our work explores the possibility of rewriting a hypervisor TCB in Rust, we
-started from the implementation of SeKVM \cite{sekvm}.
-SeKVM leveraged an earlier design~\cite{hypsec} to retrofit and secure KVM,
+chose to base on the implementation of SeKVM \cite{sekvm}, because its artifact
+\cite{sekvm-artifact} is available, and also because it has a reduced TCB
+compared to mainline KVM, which minimizes the attack surface of the codebase,
+leading to a more secure hypervisor.
+SeKVM is a formally verified KVM hypervisor,
+it leveraged an earlier design~\cite{hypsec} to retrofit and secure KVM,
 it relies on a small TCB called \secore{} to protect VM confidentiality and
 integrity against an untrusted KVM host that encompasses the host Linux kernel
 integrated with KVM.
@@ -18,7 +22,7 @@ To reduce the TCB,
 the design separates access control from resource allocation. \secore{}
 has full access to hardware resources to perform access control to
 protect VM data. SeKVM assumes VMs employ an end-to-end approach to
-encrypt I/O data. Since VMs already protects their I/O data, SeKVM
+encrypt I/O data. Since VMs already protect their I/O data, SeKVM
 focuses on protecting VM data in CPU and memory.
 The KVM host provides device drivers and complex virtualization features
 such as resource allocation, scheduling, and VM management. \secore{} is
