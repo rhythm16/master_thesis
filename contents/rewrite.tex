@@ -6,6 +6,9 @@
 %e.g. LTO.
 %Then we employ the two pass method.
 
+\todo{TODO: The first sentence does not make sense, one cannot enhance the
+security of SeKVM, it is formally verified. Also mention \rustsec{} has the
+same design as SeKVM.}
 Our goal is to enhance the security of the trusted \secore{} in SeKVM by
 rewriting it in Rust. We first forward ported SeKVM from its original
 Linux 4.18 version to the newest long term support version Linux 5.15 at the
@@ -83,7 +86,7 @@ resulting in an overlap of \secore{}'s private memory and the unusable hole
 
 To solve this issue, instead of allocating memory in the linker script,
 we first locate a range of memory which does not overlap with the unusable hole
-of Rpi-4B and the kernel image, then call \code{memblock\_reserve} to
+of Rpi-4B and the kernel image, then call \code{memblock\_reserve} to \todo{TODO: what is a memblock?}
 mark the range of memory as reserved so that the kernel does not accidentally
 access this memory range (\autoref{fig:rcorereserved}).
 The global symbols have also been changed to C macros that expand into
@@ -121,6 +124,8 @@ after the initial function by function rewrite, we removed unnecessary
 \code{unsafe} blocks, refactored the code to be more Rust-idiomatic,
 and leveraged Rust's type system to let Rust automatically check for safety
 properties.
-
 We discuss the usage of the type system to secure \rustcore{} in
 \autoref{sec:securercore}.
+\todo{TODO: The last two sentences does not fit in the picture, leveraging
+Rust's type system is only one part of \autoref{sec:securercore}.}
+
