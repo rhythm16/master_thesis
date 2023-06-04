@@ -1,4 +1,4 @@
-\chapter{Securing \rustcore{}}
+\chapter{Securing \rustcore{} Memory Accesses}
 \label{sec:securercore}
 
 %Continues from Code Migration (the redesign after the function-by-function
@@ -6,13 +6,6 @@
 %
 %Rust has safe and unsafe code -> segregate unsafe code so that most of the
 %hypervisor is written in safe Rust
-
-\begin{figure}[ht]
-\centering
-\includegraphics[width=1.00\textwidth]{figures/regions.pdf}
-\caption{Memory Regions}
-\label{fig:regions}
-\end{figure}
 
 \section{\rustcore{} Memory Regions}
 \label{sec:rcoreregions}
@@ -62,6 +55,81 @@ The \textit{Generic Area} refers to memory outside the \rustcore{} area and the 
 \rustcore{} needs to access this area to modify memory pages
 belonging to the host or guests for VM services, such as zeroing a page
 before transferring ownership from a guest back to the host during VM termination.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=1.00\textwidth]{figures/regions.pdf}
+\caption{Memory Regions}
+\label{fig:regions}
+\end{figure}
+
+\section{\rustcore{} Metadata and Reference Getter Functions}
+We aggregate \rustcore{} metadata structures
+into a single big structure \code{RcoreMetadata}
+(line 1 in \autoref{lst:getternew})
+to simplify the memory region used by these metadata.
+All CPU cores share metadata in \rustcore{}; some are per CPU.
+Fields shared by all CPU cores in \code{RcoreMetadata} are defined as type \code{\lock{}<T>}
+(an example is line 3 in \autoref{lst:getternew}),
+where \code{T} is the type that actually stores \rustcore{} metadata.
+\rustcore{}'s custom \code{\lock{}} is a generic type which can hold any
+arbitrary type alongside a lock.
+The only way to access the data wrapped in \code{\lock{}} is by calling the
+\code{lock} method of \code{\lock{}} reference.
+Since there is no existing memory allocator in a hypervisor environment,
+we directly inform where in the address space \rustcore{} should use.
+Specifically, we pre-defined the address to the instance of \code{RcoreMetadata}
+and manually initialize this memory region at boot time,
+so it can be used safely thereby.
+Using that raw address, we implemented several functions that
+transform the raw pointer to \code{RcoreMetadata} into mutable references to
+each of its fields and return them to the caller.
+
+We implement a set of reference getter functions (RGFs). \rustcore{}
+can use the RGFs to safely access \code{RcoreMetadata} with safe Rust.
+%We enable the \funcl{} layer to safely access \code{RcoreMetadata}, without any
+%unsafe Rust by implementing a set of reference getter functions (RGFs) that
+%the \funcl{} layer can call.
+Each RGF returns a mutable reference to one of the fields in \code{RcoreMetadata},
+line 10 of \autoref{lst:getternew} is an example of an RGF, it returns the mutable reference
+of the type \code{\lock{}<PMemInfo>}. The RGF is implemented by:
+
+\begin{enumerate}
+  \item dereference the raw pointer using the \code{*} operator
+  \item pick the \code{pmem\_info} field of \code{RcoreMetadata}
+  \item take the mutable reference of the field by prepending \code{\&mut}
+  \item return the mutable reference
+\end{enumerate}
+
+By defining fields of \code{RcoreMetadata} as \code{\lock{}<T>}, and with
+the RGFs, most of \rustcore{} is free from directly using raw pointers to access
+\rustcore{} metadata, and proper locks are guaranteed to be held when accessing
+them.
+
+\begin{listing}[ht]
+    \begin{minted}{Rust}
+struct RcoreMetadata {
+  [...] // other fields omitted
+  pub pmem_info: KMutex<PMemInfo>,
+  [...] // other fields omitted
+}
+
+const RCORE_METADATA_PTR: *mut RcoreMetadata = /* Rcore's memory address */;
+
+// the RGF of pmem_info
+pub fn get_pmem_info<T: CanGetPMemInfo>(_: &mut T) -> &mut KMutex<PMemInfo> {
+  // SAFETY: The pointer points to an initialized memory.
+  // The data is properly wrapped in a KMutex
+  // and the caller have the permission to get PMemInfo
+  unsafe {
+    &mut (*RCORE_METADATA_PTR).pmem_info
+  }
+}
+    \end{minted}
+    \caption{\rustcore{} metadata and Reference Getter Function}
+    \label{lst:getternew}
+    \vspace{-0.2cm}
+\end{listing}
 
 \section{Memory Region Isolation}
 
