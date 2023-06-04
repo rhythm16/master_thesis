@@ -48,7 +48,8 @@ Our implementation, \rustsec{}, incorporates a small TCB called \rustcore{} to
 protect VM confidentiality and integrity against the large and untrusted
 hypervisor codebase that encompasses KVM’s host Linux kernel.
 We identified and overcame the challenges that arose when trying to
-incorporate a Rust TCB inside Linux \todo{TODO: elaborate}.
+incorporate a Rust TCB inside Linux, bring up \rustsec{} on real hardware, and
+rewriting SeKVM in Rust.
 We also redesigned the \rustcore{} TCB to minimize the amount of unsafe Rust,
 and enclosed the unsafe code within a safe abstraction and exposed a safe API
 in order to implement complex functionalities in safe Rust, including CPU,
