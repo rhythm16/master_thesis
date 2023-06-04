@@ -21,12 +21,12 @@ syscall.
 %example  for better performance, ARM Pointer Authentication (5.0), Energy Aware Scheduling (5.0)
 %clang shadow call stack, branch target identification (5.8), MTE (5.10), clang CFI (5.13), randomized stack offset per syscall (5.13)
 
-Once the forward port of SeKVM to Linux 5.15 is ready, we can finally rewrite
+Once the forward port of SeKVM to Linux 5.15 is done, we can then rewrite
 the implementation in Rust.
 This chapter describes the challenges that arose when trying to rewrite
 \secore{} in Rust, and the techniques we employed to solve them.
 
-\section{Integration with Linux}
+\section{Integrating Rust and Linux}
 
 %challenge: Linux 5.15 does not include Rust support
 %
@@ -56,7 +56,7 @@ Due to the limited support of macro in \code{bindgen}
 and the heavy usage of Linux,
 we do not use it to generate constants.
 Regarding alignment, field layout order, and padding of custom types,
-Rust provides an attribute \code{\#[repr\-(C)]}
+we use the Rust attribute \code{\#[repr\-(C)]}
 that ensures the data layout of the marked type has the same layout as in C.
 
 \section{Bringing up \rustsec{} on Real Hardware}
@@ -109,8 +109,8 @@ it is clear from the beginning that
 a top-down approach to a Rust rewrite would be error-prone and difficult to test.
 Therefore, we elected to start the rewriting effort bottom-up,
 where all previous C functions are rewritten in Rust, one by one.
-This incremental approach allows us to test our progress of function rewrite in
-succession, reducing the risk of introducing bugs.
+This incremental approach allows us to test one rewritten function at a time,
+reducing the risk of introducing bugs.
 %One major downside of this approach is that it is difficult to rewrite a single
 %function in a Rust-idiomatic and safe way.
 One major downside of this approach is the difficulty of rewriting individual
