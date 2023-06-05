@@ -136,7 +136,7 @@ pub fn get_pmem_info<T: CanGetPMemInfo>(_: &mut T) -> &mut KMutex<PMemInfo> {
 Raw pointer accesses are prohibited in safe Rust as they easily violate Rust’s
 ownership model. As detailed in the upcoming paragraphs, we examine the need
 for raw pointers for accessing the four regions described in \autoref{sec:rcoreregions}
-and the measures are taken to guarantee their isolation,
+and the measures taken to guarantee their isolation,
 even when employing unsafe Rust in their implementation.
 We also deliberately made the
 amount of unsafe code that contains raw pointer accesses small ($\sim$50 LOC).
