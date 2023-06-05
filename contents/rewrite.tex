@@ -6,11 +6,14 @@
 %e.g. LTO.
 %Then we employ the two pass method.
 
-\todo{TODO: The first sentence does not make sense, one cannot enhance the
-security of SeKVM, it is formally verified. Also mention \rustsec{} has the
-same design as SeKVM.}
-Our goal is to enhance the security of the trusted \secore{} in SeKVM by
-rewriting it in Rust. We first forward ported SeKVM from its original
+%\todo{TODO: The first sentence does not make sense, one cannot enhance the
+%security of SeKVM, it is formally verified. Also mention \rustsec{} has the
+%same design as SeKVM.}
+The goal of this work is to leverage Rust's safety features in a hypervisor TCB
+by rewriting SeKVM's \secore{} in Rust.
+The resulting implementation, \rustsec{}, therefore also leverages the design
+described in \autoref{sec:sekvmintro}.
+We first forward ported SeKVM from its original
 Linux 4.18 version to the newest long term support version Linux 5.15 at the
 time of development.
 By forward porting we benefit from Linux's advancements including performance
