@@ -92,8 +92,9 @@ we first locate a range of memory which does not overlap with the unusable hole
 of Rpi-4B and the kernel image, then call \code{memblock\_reserve} to \todo{TODO: what is a memblock?}
 mark the range of memory as reserved so that the kernel does not accidentally
 access this memory range (\autoref{fig:rcorereserved}).
-The global symbols have also been changed to C macros that expand into
-addresses in the reserved range for \rustsec{}'s \rustcore{} usage.
+The global symbols previously defined the Linux kernel linker script have also
+been changed to macros that expand into addresses in the reserved range for
+\rustsec{}'s \rustcore{} usage.
 
 \begin{figure}[H]
     \includegraphics[scale=0.60]{figures/rcore_reserved.pdf}
