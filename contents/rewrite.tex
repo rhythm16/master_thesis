@@ -87,10 +87,11 @@ resulting in an overlap of \secore{}'s private memory and the unusable hole
     \label{fig:overlap}
 \end{figure}
 
-To solve this issue, instead of allocating memory in the linker script,
-we first locate a range of memory which does not overlap with the unusable hole
-of Rpi-4B and the kernel image, then call \code{memblock\_reserve} to \todo{TODO: what is a memblock?}
-mark the range of memory as reserved so that the kernel does not accidentally
+To solve this issue for \rustsec{}, instead of allocating memory in the linker
+script, we first locate a range of memory which does not overlap with the
+unusable hole of Rpi-4B and the kernel image, then add a new memblock that to
+correspond to the \rustcore{}'s private memory. We mark it as reserved by
+calling \code{memblock\_reserve}, so that the kernel does not accidentally
 access this memory range (\autoref{fig:rcorereserved}).
 The global symbols previously defined the Linux kernel linker script have also
 been changed to macros that expand into addresses in the reserved range for
