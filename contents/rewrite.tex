@@ -127,10 +127,7 @@ Furthermore, it may result in a lot of \code{unsafe} blocks.
 We solve these issues by adding a second phase to the Rust rewrite;
 after the initial function by function rewrite, we removed unnecessary
 \code{unsafe} blocks, refactored the code to be more Rust-idiomatic,
-and leveraged Rust's type system to let Rust automatically check for safety
-properties.
-We discuss the usage of the type system to secure \rustcore{} in
+and leveraged Rust features to enhance \rustcore{} memory safety.
+We discuss the features used to secure \rustcore{} memory accesses in
 \autoref{sec:securercore}.
-\todo{TODO: The last two sentences does not fit in the picture, leveraging
-Rust's type system is only one part of \autoref{sec:securercore}.}
 
