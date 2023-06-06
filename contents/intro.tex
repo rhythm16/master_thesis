@@ -58,14 +58,14 @@ Further, Rust’s type system is leveraged to ensure spatial memory safety of
 \rustcore{}’s memory accesses by dividing physical memory into multiple
 disjoint regions and guaranteeing all memory accesses done by Rcore are located
 in the predefined regions.
-For the \rustcore{} metadata region, a type containing all metadata is defined.
-We enforce \rustcore{} to access the shared metadata via a set of reference
-getter functions (RGF).
+For the \rustcore{} metadata region, we enforce \rustcore{} to access the
+shared metadata via a set of reference getter functions (RGF).
 Each RGF wraps a given Rcore’s raw pointer usage and returns a mutable
-reference to the associated shared metadata object.
+reference to the associated shared metadata object after the caller acquires
+the corresponding lock.
 For the remaining memory regions, we built
 customized Rust types for each memory region that
-enforces bound-check to accesses, and mandating that \rustcore{} accesses a
+enforces bound-check to accesses, and mandate that \rustcore{} accesses a
 memory region via each corresponding type.
 %This is achieved with customized Rust types for each memory region that
 %enforces bound-check to accesses, and mandating that \rustcore{} accesses a
