@@ -13,7 +13,8 @@ changing the method used for reserving memory, and rewritten the SeKVM's TCB in
 Rust. Moreover, raw pointer accessses are segregated into a small amount of
 unsafe code to allow most hypervisor functionalities to be implemented in safe
 Rust. We also leverage Rust's compile-time checks to eliminate memory safety
-bugs of the TCB. Rust's type system is used to enforce memory region isolation.
+bugs of the TCB. Rust's type system is used to enforce memory region isolation
+via custom types.
 \rustsec{} preserves the performance efficiency of KVM, demonstrating the
 practicality for deployments.
 
