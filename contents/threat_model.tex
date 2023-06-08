@@ -1,0 +1,18 @@
+\chapter{Assumptions and Threat Model}
+\label{sec:threatmodel}
+
+We assume a remote attacker or a curious administrator that aims to compromise
+the integrity and confidentiality of VM data. An attacker can exploit bugs in
+the host kernel integrated with KVM. A remote attacker cannot access the
+hardware, so physical attacks such as cold boot attacks~\cite{coldboot}
+attack and memory bus snooping are out of scope. We assume on-site security
+measure~\cite{googlesecuritywhitepaper} is in place to prohibit unauthorized
+physical access to the hardware. 
+We also exclude side-channel attacks~\cite{ristenpart09sc,zhang12sc,irazoqui15sc,zhang14sc,liu15sc,backes13sc}, from our threat model. 
+
+We assume a VM does not voluntarily reveal its sensitive data, intentionally
+or by accident. A VM can be compromised by a remote attacker that 
+exploits vulnerabilities in the VM. We do not provide security features to 
+prevent or detect VM vulnerabilities, so a compromised VM that involuntarily 
+reveals its data is out of scope. However, attackers may try to attack 
+other hosted VMs from a compromised VM for which we provide protection. 
