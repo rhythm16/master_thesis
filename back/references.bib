@@ -623,3 +623,75 @@ series = {ACSAC '20}
   {https://www.ndss-symposium.org/ndss2013/ndss-2013-programme/preventing-side-channel-leaks-web-traffic-formal-approach/},
   address = {San Diego, CA}
 }
+
+@misc{Rust-for-Linux,
+  author = {Rust for Linux Team},
+  title = {Rust for Linux},
+  year = {2023},
+  howpublished = {\url{https://rust-for-linux.com/}}
+}
+
+@misc{rust-vmm,
+  author={rust-vmm maintainers},
+  title={rust-vmm},
+  howpublished={\url{https://github.com/rust-vmm}},
+  year={2023},
+}
+
+@inproceedings {Firecracker,
+author = {Alexandru Agache and Marc Brooker and Alexandra Iordache and Anthony Liguori and Rolf Neugebauer and Phil Piwonka and Diana-Maria Popa},
+title = {Firecracker: Lightweight Virtualization for Serverless Applications },
+booktitle = {17th USENIX Symposium on Networked Systems Design and Implementation (NSDI 20)},
+year = {2020},
+isbn = {978-1-939133-13-7},
+address = {Santa Clara, CA},
+pages = {419--434},
+url = {https://www.usenix.org/conference/nsdi20/presentation/agache},
+publisher = {USENIX Association},
+month = feb,
+}
+
+@misc{crosvm,
+  author={Google},
+  title={ChromiumOS Virtual Machine Monitor},
+  howpublished={\url{https://chromium.googlesource.com/chromiumos/platform/crosvm/}},
+  year          = {2023},
+}
+
+@inproceedings {hyperenclave,
+author = {Yuekai Jia and Shuang Liu and Wenhao Wang and Yu Chen and Zhengde Zhai and Shoumeng Yan and Zhengyu He},
+title = {{HyperEnclave}: An Open and Cross-platform Trusted Execution Environment},
+booktitle = {2022 USENIX Annual Technical Conference (USENIX ATC 22)},
+year = {2022},
+isbn = {978-1-939133-29-48},
+address = {Carlsbad, CA},
+pages = {437--454},
+url = {https://www.usenix.org/conference/atc22/presentation/jia-yuekai},
+publisher = {USENIX Association},
+month = jul,
+}
+
+@misc{CloudHypervisor,
+  author={Cloud Hypervisor maintainers},
+  title={Cloud Hypervisor - Run Cloud Virtual Machines Securely and Efficiently},
+  howpublished={\url{https://www.cloudhypervisor.org/}},
+  year={2023},
+}
+
+@inproceedings{VMSH,
+author = {Thalheim, J\"{o}rg and Okelmann, Peter and Unnibhavi, Harshavardhan and Gouicem, Redha and Bhatotia, Pramod},
+title = {VMSH: Hypervisor-Agnostic Guest Overlays for VMs},
+year = {2022},
+isbn = {9781450391627},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3492321.3519589},
+doi = {10.1145/3492321.3519589},
+abstract = {Lightweight virtual machines (VMs) are prominently adopted for improved performance and dependability in cloud environments. To reduce boot up times and resource utilisation, they are usually "pre-baked" with only the minimal kernel and userland strictly required to run an application. This introduces a fundamental trade-off between the advantages of lightweight VMs and available services within a VM, usually leaning towards the former. We propose VMSH, a hypervisor-agnostic abstraction that enables on-demand attachment of services to a running VM---allowing developers to provide minimal, lightweight images without compromising their functionality. The additional applications are made available to the guest via a file system image. To ensure that the newly added services do not affect the original applications in the VM, VMSH uses lightweight isolation mechanisms based on containers. We evaluate VMSH on multiple KVM-based hypervisors and Linux LTS kernels and show that: (i) VMSH adds no overhead for the applications running in the VM, (ii) de-bloating images from the Docker registry can save up to 60% of their size on average, and (iii) VMSH enables cloud providers to offer services to customers, such as recovery shells, without interfering with their VM's execution.},
+booktitle = {Proceedings of the Seventeenth European Conference on Computer Systems},
+pages = {678–696},
+numpages = {19},
+keywords = {VM introspection, virtual machines},
+location = {Rennes, France},
+series = {EuroSys '22}
+}

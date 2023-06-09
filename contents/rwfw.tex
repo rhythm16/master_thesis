@@ -1,2 +1,52 @@
 \chapter{Related Work and Future Work}
 \label{sec:rwfw}
+
+\section{Related Work}
+
+\subsection{VM Protection}
+%~\cite{lisosp21,zhang2011cloudvisor,zeyu20usenix,pkvm,fidelius-hpca18,sekvm}
+Various previous work redesigned the hypervisor to protect VMs.
+%Hardware and software approaches have both been explored, including nested
+Cloudvisor \cite{zhang2011cloudvisor, zeyu20usenix} introduced a tiny security
+monitor underneath the commodity hypervisor to protect the hosted VMs.
+Twinvisor \cite{lisosp21} supports regular VMs and confidential VMs by running
+hypervisors within both of ARM TrustZone's normal world and secure world.
+HypSec and pkvm \cite{hypsec, pkvm} reduced the hypervisor's resource access
+control component into to a small core to reduce the attack surface.
+Unlike our work, none of them used Rust to secure their hypervisor
+implementation.
+\rustsec{} and SeKVM~\cite{sekvm} both leveraged HypSec's design~\cite{hypsec}
+to retrofit and secure KVM, providing the same level of VM protection. SeKVM
+included a formally verified core to protect VMs against an untrusted host Linux
+kernel, while \rustsec{} relies on a Rust-based \rustcore{} to protect VMs.
+Formal verification of the concurrent C-based SeKVM core requires significant
+effort. The authors took two person-years to complete the correctness and
+security proofs.
+In contrast, our Rust-based implementation took less than one person-year.
+Different from formal verification, because the Rust compiler automatically
+ensures memory safety properties, our hypervisor codebase is flexible to
+frequent updates.
+
+\subsection{Rust-based Systems}
+Recent work extended existing C/C++ systems with a Rust binding to enable
+a Rust-based programming environment. Rust-SGX~\cite{rustsgx} and RusTEE
+\cite{rustee} wrapped the C/C++ TEE SDK and exposed a safe Rust API
+to enable Rust programming in TEE environments such as SGX and TrustZone.
+Similarly, the Rust-for-Linux~\cite{Rust-for-Linux} project added
+abstraction layers to the Linux kernel to facilitate Rust driver
+programming with Rust.
+Besides building a Rust binding, previous work re-implemented C-based
+components in virtualization systems with Rust.
+rust-vmm~\cite{rust-vmm} rewrote a subset of QEMU's functionalities
+and separated them into libraries in Rust crates.
+Firecracker~\cite{Firecracker}, crosvm~\cite{crosvm}, Cloud Hypervisor
+\cite{CloudHypervisor}, and VMSH~\cite{VMSH} extended the
+rust-vmm project with extra functionalities. These previous works
+built on top of existing core systems. In contrast, our work
+retrofitted Linux/KVM with a Rust-based TCB.
+HyperEnclave~\cite{hyperenclave} relies on a Rust-based security
+monitor to enforce isolation between enclave TEEs. Unlike
+our work, the authors did not discuss the Rust monitor's implementation
+and its unsafe Rust usage.
+
+\section{Future Work}
