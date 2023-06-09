@@ -29,6 +29,13 @@ to no virtualization overhead.
 A higher value means higher overhead. The performance on real application
 workloads show modest overhead overall for \rustsec{} compared to SeKVM and
 mainline KVM.
+The bare-metal setup actually performed worst in the \code{TCP\_MAERTS}
+benchmark, this is caused by all four experimental setups saturated the 1GbE
+NIC on the Raspberry Pi 4 model B, and also system noise was more significant
+while measuring the bare-metal setup.
+Benchmarks ran in the three VM setups resulted in at most 20\% difference,
+we believe the differences are caused by various system noise factors e.g.
+caches, kernel thread wakeups, and dynamic voltage frequency scaling.
 
 \begin{table}
 \centering
