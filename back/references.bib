@@ -695,3 +695,67 @@ keywords = {VM introspection, virtual machines},
 location = {Rennes, France},
 series = {EuroSys '22}
 }
+
+@article{Verus,
+author = {Lattuada, Andrea and Hance, Travis and Cho, Chanhee and Brun, Matthias and Subasinghe, Isitha and Zhou, Yi and Howell, Jon and Parno, Bryan and Hawblitzel, Chris},
+title = {Verus: Verifying Rust Programs Using Linear Ghost Types},
+year = {2023},
+issue_date = {April 2023},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {7},
+number = {OOPSLA1},
+url = {https://doi.org/10.1145/3586037},
+doi = {10.1145/3586037},
+abstract = {The Rust programming language provides a powerful type system that checks linearity and borrowing, allowing code to safely manipulate memory without garbage collection and making Rust ideal for developing low-level, high-assurance systems. For such systems, formal verification can be useful to prove functional correctness properties beyond type safety. This paper presents Verus, an SMT-based tool for formally verifying Rust programs. With Verus, programmers express proofs and specifications using the Rust language, allowing proofs to take advantage of Rust's linear types and borrow checking. We show how this allows proofs to manipulate linearly typed permissions that let Rust code safely manipulate memory, pointers, and concurrent resources. Verus organizes proofs and specifications using a novel mode system that distinguishes specifications, which are not checked for linearity and borrowing, from executable code and proofs, which are checked for linearity and borrowing. We formalize Verus' linearity, borrowing, and modes in a small lambda calculus, for which we prove type safety and termination of specifications and proofs. We demonstrate Verus on a series of examples, including pointer-manipulating code (an xor-based doubly linked list), code with interior mutability, and concurrent code.},
+journal = {Proc. ACM Program. Lang.},
+month = {apr},
+articleno = {85},
+numpages = {30},
+keywords = {systems verification, Rust, linear types}
+}
+
+@article{Prusti,
+author = {Astrauskas, Vytautas and M\"{u}ller, Peter and Poli, Federico and Summers, Alexander J.},
+title = {Leveraging Rust Types for Modular Specification and Verification},
+year = {2019},
+issue_date = {October 2019},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {3},
+number = {OOPSLA},
+url = {https://doi.org/10.1145/3360573},
+doi = {10.1145/3360573},
+abstract = {Rust's type system ensures memory safety: well-typed Rust programs are guaranteed to not exhibit problems such as dangling pointers, data races, and unexpected side effects through aliased references. Ensuring correctness properties beyond memory safety, for instance, the guaranteed absence of assertion failures or more-general functional correctness, requires static program verification. For traditional system programming languages, formal verification is notoriously difficult and requires complex specifications and logics to reason about pointers, aliasing, and side effects on mutable state. This complexity is a major obstacle to the more-widespread verification of system software. In this paper, we present a novel verification technique that leverages Rust's type system to greatly simplify the specification and verification of system software written in Rust. We analyse information from the Rust compiler and synthesise a corresponding core proof for the program in a flavour of separation logic tailored to automation. To verify correctness properties beyond memory safety, users can annotate Rust programs with specifications at the abstraction level of Rust expressions; our technique weaves them into the core proof to verify modularly whether these specifications hold. Crucially, our proofs are constructed and checked automatically without exposing the underlying formal logic, allowing users to work exclusively at the level of abstraction of the programming language. As such, our work enables a new kind of verification tool, with the potential to impact a wide audience and allow the Rust community to benefit from state-of-the-art verification techniques. We have implemented our techniques for a subset of Rust; our evaluation on several thousand functions from widely-used Rust crates demonstrates its effectiveness.},
+journal = {Proc. ACM Program. Lang.},
+month = {oct},
+articleno = {147},
+numpages = {30},
+keywords = {concurrency, heap-manipulating programs, Rust, type systems}
+}
+
+@inproceedings{Creusot,
+author = {Denis, Xavier and Jourdan, Jacques-Henri and March\'{e}, Claude},
+title = {Creusot: A Foundry For The Deductive Verification Of Rust Programs},
+year = {2022},
+isbn = {978-3-031-17243-4},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+url = {https://doi.org/10.1007/978-3-031-17244-1_6},
+doi = {10.1007/978-3-031-17244-1_6},
+abstract = {Rust is a fairly recent programming language for system programming, bringing static guarantees of memory safety through a strict ownership policy. The strong guarantees brought by this feature opens promising progress for deductive verification, which aims at proving the conformity of Rust code with respect to a specification of its intended behavior. We present the foundations of Creusot, a tool for the formal specification and deductive verification of Rust code. A first originality comes from Creusot’s specification language, which features a notion of prophecy to reason about memory mutation, working in harmony with Rust’s ownership system. A second originality is how Creusot builds upon Rust trait system to provide several advanced abstraction features.},
+booktitle = {Formal Methods and Software Engineering: 23rd International Conference on Formal Engineering Methods, ICFEM 2022, Madrid, Spain, October 24–27, 2022, Proceedings},
+pages = {90–105},
+numpages = {16},
+keywords = {Aliasing and ownership, Rust programming language, Traits, Prophecies, Deductive program verification},
+location = {Madrid, Spain}
+}
+
+@misc{Flux,
+      title={Flux: Liquid Types for Rust}, 
+      author={Nico Lehmann and Adam Geller and Niki Vazou and Ranjit Jhala},
+      year={2022},
+      eprint={2207.04034},
+      archivePrefix={arXiv},
+      primaryClass={cs.PL}
+}

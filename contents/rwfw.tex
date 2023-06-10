@@ -50,3 +50,39 @@ our work, the authors did not discuss the Rust monitor's implementation
 and its unsafe Rust usage.
 
 \section{Future Work}
+
+Hardware features such as memory translation done by the Memory Management
+Unit (MMU), and exception levels, are not modeled by Rust, therefore the
+compiler is not able to check for misconfiguration or logical errors when
+building software on top of these features.
+In other words, potential logical bugs in \rustcore{} still undermines the
+security of our hypervisor.
+As an example, setting the wrong permission bits in the host's NPT
+makes way for a compromised host kernel to read the memory of a protected VM.
+We can add one more layer of defense by taking advantage of Rust
+auto-verification tools \cite{Verus, Prusti, Creusot, Flux} which base on
+Rust's strong type system, to check our code adheres to the specifications.
+
+\rustcore{} demonstrated the ability of Rust to isolate memory regions by
+leveraging language features like automatic bound checks for array types, and
+type constructor that checks for their arguments. Furthermore, these features
+can be used even more extensively to achieve a more fine-grained memory region
+isolation, such as separating each level of the NPT pools into pgd pool, pud
+pool, pmd pool, or splitting the hypervisor metadata into multiple isolated
+regions, each serving a different purpose.
+In addition, the lifetime feature of Rust remains unexplored in our work.
+Unlike the spatial protection we achieved through the type system, there are
+possibilities for utilizing lifetime annotations on references to enforce
+temporal safety guarantees, such as preventing the usage of a resource before
+another a previous usage has gone out of scope. This type of lifetime
+utilization is independent of our spatial protection and has the potential to
+further enhance the safety of our code.
+
+%Other low-level system software may also benefit from a Rust rewrite.
+%
+%write other stuff in Rust as well
+%  CCA
+%  pkvm intel
+%  other parts of the kernel
+%  Rust for Linux
+
