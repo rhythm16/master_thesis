@@ -43,8 +43,32 @@ Linux 5.15, which is the latest long term support kernel version at the time of
 \rustsec{} development, does not support Rust as a development language.
 Therefore, we had to integrate Rust code with the rest of the Linux kernel.
 We implement \rustcore{} in a single crate on the \code{no\_std} environment
-and compile it into a single static library. The static library is then linked
+and compile it into a single static library \code{libkrustvm.a}.
+The static library is then linked
 with the rest of the kernel to create the final kernel image.
+We created a new subdirectory in Linux's source path \code{arch/arm64/krustvm}.
+Within it contains the \rustcore{} crate and the \code{Makefile} for this
+directory. To integrate building \code{libkrustvm.a} and linking it with the
+rest of the kernel, we add following to the Makefile:
+\begin{enumerate}
+\item{append \code{libkrustvm.a} to Kbuild built-in object goals \code{obj-y} by adding the line \code{obj-y += libsekvmrs.a}}
+\item{define Makefile target
+\begin{listing}[hbtp]
+    \begin{minted}{Makefile}
+$(obj)/libkrustvm.a: $(src)/krustvm/src/*.rs
+        cargo build --release --target=aarch64-unknown-linux-gnu
+    \end{minted}
+    \label{lst:Makefile}
+    \vspace{-1.2cm}
+\end{listing}
+to instruct \code{make} to use \code{cargo} to generate \code{libkrustvm.a}.
+}
+\item{link \code{libkrustvm.a} to generate object file \code{krustvm.o}}
+\end{enumerate}
+The Makefile in \code{arch/arm64/krustvm} generates \code{krustvm.o},
+and the kernel build system will then link this file with all other object
+files in the kernel and produce the final kernel image.
+
 KVM separates EL2 code from EL1 by grouping EL2 code in a section
 \code{.hyp.text}, then mapping that section in EL2's address space at
 initialization.
