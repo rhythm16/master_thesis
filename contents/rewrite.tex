@@ -167,3 +167,48 @@ and leveraged Rust features to enhance \rustcore{} memory safety.
 We discuss the features used to secure \rustcore{} memory accesses in
 \autoref{sec:securercore}.
 
+\subsection{Rust Code Organization}
+pub
+
+\subsection{Unsafe Rust Usages}
+
+A small part of \rustcore{}'s implementation is coded in unsafe Rust.
+The source of unsafe Rust includes inline assembly, the Foreign Function
+Interface (FFI), KVM ARM Per-CPU variables, and raw pointer accesses.
+The first three categories are discussed in this section,
+and for raw pointer usages, \autoref{sec:securercore} shows how we check for
+each raw pointer usage scenario and guarantee their memory safety.
+
+\textbf{Inline Assembly.}
+Inline assembly are used for system instructions and system register accesses.
+For example, TLB invalidation instructions must run when \rustcore{} updates the
+NPTs, and the \code{VTTBR\_EL2} register must be switched when preparing to run
+a guest VM.
+We make use of Rust's built-in module \code{core::arch::asm} to insert inline
+assembly. For system register accesses, the \code{aarch64-cpu} crate
+\cite{aarch64cpu} is imported into our \rustcore{} crate, it provides a clean
+API for reading and writing AArch64 system registers. The inline assembly used
+for the actual register accesses are abstracted behind safe APIs.
+
+\textbf{FFI.}
+FFIs are used for calling longer assembly routines, such as the cache
+invalidation routine, and \code{\_\_guest\_enter} for context switching general
+purpose registers and entering guest VMs.
+
+\textbf{KVM ARM Per-CPU Variables in Rust.}
+Using KVM ARM Per-CPU variables is special case for unsafe Rust.
+Mainline KVM has its EL2 per CPU variable mechanism; it is implemented by first
+allocating enough space for all cores to have a copy of the per CPU variables,
+then, for each core, it records the offset from its copy of the variables to the
+base copy. This per-core offset is then stored in each core's \code{TPIDR\_EL2}
+system register. When the need to access a per CPU variable arrives, the
+base address is first acquired by referencing a global variable, then adding
+\code{TPIDR\_EL2}'s value to the variable's address. \rustsec{} continues to use
+this mechanism by declaring the symbol which corresponds to the base address as
+a Rust extern static variable, take its raw address, then add the value in
+\code{TPIDR\_EL2} to it. This approach requires three \code{unsafe} statements,
+first from reading the address of the extern static variable, then reading
+\code{TPIDR\_EL2} via inline assembly, and lastly, another \code{unsafe} to
+dereference the calculated address. Concurrent accesses will not pose a problem
+since each core accesses a different address.
+
