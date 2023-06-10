@@ -10,8 +10,9 @@
 %security of SeKVM, it is formally verified. Also mention \rustsec{} has the
 %same design as SeKVM.}
 The goal of this work is to leverage Rust's safety features in a hypervisor TCB.
-The resulting implementation, \rustsec{}, follows the design described in
-\autoref{sec:sekvmintro} for its security-oriented design.
+Our Rust-based hypervisor, \rustsec{}, follows the design described in
+\autoref{sec:sekvmintro}, and is based upon the SeKVM implementation.
+%We experimented with its reduced TCB that is designed with security in mind.
 We first forward ported SeKVM from its original
 Linux 4.18 version to the newest long term support version Linux 5.15 at the
 time of development.
