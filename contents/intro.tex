@@ -87,10 +87,12 @@ compared to mainline KVM and SeKVM. We demonstrate the practicality of
 securing an existing commodity hypervisor by a C-to-Rust rewrite.
 
 The rest of the thesis will be organized as follows. Background
-will be discussed in \autoref{sec:bg}. The process of implementing a Rust TCB
+will be reviewed in \autoref{sec:bg}. Our threat model and assumptions are
+listed in \autoref{sec:threatmodel}. The process of implementing a Rust TCB
 for KVM and the techniques used are described in \autoref{sec:rewrite}.
 \autoref{sec:securercore} presents how we utilize Rust's safety features to
 design and secure \rustcore{} memory accesses.
 Evaluation of \rustsec{} and its comparison with mainline KVM and SeKVM is
-covered in \autoref{sec:eval}. At last, we conclude the thesis in
+covered in \autoref{sec:eval}. Related work and future work are discussed in
+\autoref{sec:rwfw}. At last, we conclude the thesis in
 \autoref{sec:conclusions}.
