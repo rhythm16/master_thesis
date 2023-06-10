@@ -89,6 +89,18 @@ Regarding alignment, field layout order, and padding of custom types,
 we use the Rust attribute \code{\#[repr\-(C)]}
 that ensures the data layout of the marked type has the same layout as in C.
 
+Whenever an exception gets taken to EL2, the CPU switches it exception level to
+EL2, saves the program status and exception syndrome, and jumps to the
+preassigned exception vector.
+\rustcore{}'s entry points are the functions that the assembly exception
+vectors, which are written in assembly, calls.
+%Rust functions in \rustcore{} are invoked in exception vectors.
+We modify the exception vectors to call \rustcore{} functions instead of the
+original C handlers.
+%This is the place where our Rust code in \rustcore{} comes into play.
+%The exception vectors are implemented in assembly, they call Rust
+%exception handlers after it switches the register context to EL2.
+
 \section{Bringing up \rustsec{} on Real Hardware}
 
 We chose the Raspberry Pi model 4B (Rpi-4B) to verify our implementation on
