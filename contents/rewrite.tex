@@ -167,7 +167,42 @@ We discuss the features used to secure \rustcore{} memory accesses in
 \autoref{sec:securercore}.
 
 \subsection{Rust Code Organization}
-pub
+
+Rust packages code into \textit{modules}, modules are containers for functions,
+types, constants, traits, etc. Rust programs or libraries are made up of one or
+multiple modules.
+\rustcore{} consists of multiple modules, including the typical utility
+functions module, and modules that contain functions that implement different
+hypervisor tasks, for example mapping a page in the host kernel's NPT.
+Moreover, there are modules that implement custom type definitions and their
+type methods. C does not support methods for structs, it therefore lacks the
+ability to present an API that provides type-specific functionalities while
+abstracting away how the implementation manipulates the structure's data.
+For instance in \autoref{lst:typemethod}, users of \code{VMInfo} is forbidden
+from accessing the \code{vmid} field of \code{VMInfo} directly, but must call
+the \code{get\_vmid} method. The user thus can not arbitrarily modify data
+inside the structure. This Rust feature helps eliminate bugs such as writing to
+read-only fields, and reading internal fields.
+
+\begin{listing}[ht]
+    \begin{minted}{Rust}
+// in the VM module:
+pub struct VMInfo {
+    vmid: u32,
+    [...] // other fields omitted
+}
+
+impl VMInfo {
+    #[inline(always)]
+    pub fn get_vmid(&self) -> u32 {
+        self.vmid
+    }
+}
+    \end{minted}
+    \caption{type method example}
+    \label{lst:typemethod}
+    \vspace{-0.2cm}
+\end{listing}
 
 \subsection{Unsafe Rust Usages}
 
