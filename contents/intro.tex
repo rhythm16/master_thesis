@@ -51,8 +51,13 @@ benefits from the strong safety guarantees that Rust automatically provides.
 %Our work leverages the Rust programming language and rewrite SeKVM \cite{sekvm},
 %a secure Linux KVM hypervisor in Rust, so that the resulting hypervisor
 %benefits from the strong safety guarantees that Rust automatically provides.
-We build upon the work of SeKVM \cite{sekvm} and rewrite it in Rust.
-Our implementation, \rustsec{}, incorporates a small Rust TCB called \rustcore{} to
+We build upon the work of SeKVM \cite{sekvm}. We initially forward ported SeKVM
+from Linux 4.18 to Linux 5.15, to take advantage of new kernel features
+including Link-Time-Optimization (LTO) and energy-aware scheduling. SeKVM's
+verified TCB \textit{\secore{}} is then rewritten in Rust, which we call
+\textit{\rustcore{}}.
+The resulting hypervisor, \rustsec{}, incorporates the small Rust TCB
+\rustcore{} to
 protect VM confidentiality and integrity against the large and untrusted
 hypervisor codebase that encompasses KVM’s host Linux kernel.
 We identified and overcame the challenges that arose when trying to
