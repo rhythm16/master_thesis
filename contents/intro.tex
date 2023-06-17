@@ -30,6 +30,11 @@ Rust is an emerging programming language that ensures strong memory safety
 guarantees at compile time while offering performance efficiency.
 Its distinctive ownership and lifetime system
 effectively addresses potential safety issues that programmers may encounter.
+Rust prevents various memory safety bugs, for example, null pointer
+dereferences are eliminated by distinguishing between nullable and non
+nullable types, nullable types are not allowed by default, array out-of-bound
+accesses are prevented by runtime checks that are added by the compiler, and
+Rust's ownership system prevents dangling pointers.
 Further, similar to programming languages like C, Rust allows developers to
 directly manage low-level systems resources such as memory. Due to these
 attributes, various previous work has adopted Rust to implement systems
