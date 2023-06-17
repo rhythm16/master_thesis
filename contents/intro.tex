@@ -63,8 +63,9 @@ hypervisor codebase that encompasses KVM’s host Linux kernel.
 We identified and overcame the challenges that arose when trying to
 incorporate a Rust TCB inside Linux, bring up \rustsec{} on real hardware, and
 rewrite SeKVM's TCB in Rust.
-We also redesigned \rustcore{} to minimize the amount of unsafe Rust,
-and enclosed the unsafe code within a safe abstraction and exposed a safe API
+We implemented \rustcore{} is a way such that the amount of unsafe Rust is
+minimized.
+Unsafe code are enclosed within a safe abstraction and a safe API is exposed
 in order to implement complex functionalities in safe Rust, including CPU,
 memory, VM boot protection, VM exit, and hypercall handlers.
 Further, Rust’s type system is leveraged to ensure spatial memory safety of
