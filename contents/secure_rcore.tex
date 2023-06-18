@@ -24,26 +24,8 @@ The \rustcore{} Page Table Pool, as its name suggests, keeps private pools of ph
 for NPTs and SMMU page tables so that \rustcore{} has complete control
 over the permissions and the virtual-to-physical mappings of the memory
 accessed by the host Linux kernel, VMs, and I/O devices. The \rustcore{} metadata,
-on the other hand, is used for storing \rustcore{} metadata such as NPT information,
-physical memory page ownership, VM states, SMMU page table metadata, etc.
-We constructed custom types to store these \rustcore{} metadata (\autoref{tab:metadata}).
-
-\begin{table}
-\begin{tabular}{ |p{0.2\linewidth}|p{0.7\linewidth}| }
-\hline
-\footnotesize \textbf{Name} & \footnotesize \textbf{Decription of Data} \\ \hline
-\footnotesize vCPU context & \footnotesize The array that stores the state of each vCPU register. \\ \hline
-\footnotesize VM info & \footnotesize The per-VM execution state metadata. \\ \hline
-\footnotesize NPT info & \footnotesize The NPT pool allocation status. \\ \hline
-\footnotesize PMEM info & \footnotesize The physical memory ownership and sharing status. \\ \hline
-\footnotesize SMMU info & \footnotesize The SMMU management and page tables metadata. \\ \hline
-\footnotesize SMMUPT info & \footnotesize The SMMU page table pool allocation status. \\ \hline
-\end{tabular}
-\vspace{0.2cm}
-\caption{\rustcore{} metadata}
-\label{tab:metadata}
-\vspace{-0.4cm}
-\end{table}
+on the other hand, is used for storing \rustcore{} metadata described in
+\autoref{sec:RCO}
 
 \textbf{SMMU Area.}
 SMMU is accessed via MMIOs. \rustcore{} unmaps the SMMU

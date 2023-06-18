@@ -128,6 +128,7 @@ and leveraged Rust features to enhance \rustcore{} memory safety.
 %\autoref{sec:securercore}.
 
 \subsection{Rust Code Organization}
+\label{sec:RCO}
 
 Rust packages code into \textit{modules}, modules are containers for functions,
 types, constants, traits, etc. Rust programs or libraries are made up of one or
@@ -135,15 +136,41 @@ multiple modules.
 \rustcore{} consists of multiple modules, including the typical utility
 functions module, and modules that contain functions that implement different
 hypervisor tasks, for example mapping a page in the host kernel's NPT.
-Moreover, there are modules that implement custom type definitions and their
-type methods. C does not support methods for structs, it therefore lacks the
-ability to present an API that provides type-specific functionalities while
+%Moreover, there are modules that implement custom type definitions and their
+%type methods.
+Moreover, each of the \rustcore{} metadata types (\autoref{tab:metadata}) used
+for storing NPT information, physical memory page ownership, VM information,
+SMMU page table metadata, etc., is implemented as its own module that defines
+the type and its associated type methods.
+One of the modules is \code{VMInfo}, it includes the definition of the type
+\code{VMInfo}, which stores information of a VM including its VMID, state, and
+an array of VCPU states. The module also contains methods for reading the VMID,
+setting the state of the VM, etc.
+Different from Rust, C does not support methods for structs, it therefore lacks
+the ability to present an API that provides type-specific functionalities while
 abstracting away how the implementation manipulates the structure's data.
 For instance in \autoref{lst:typemethod}, users of \code{VMInfo} is forbidden
 from accessing the \code{vmid} field of \code{VMInfo} directly, but must call
 the \code{get\_vmid} method. The user thus can not arbitrarily modify data
 inside the structure. This Rust feature helps eliminate bugs such as writing to
 read-only fields, and reading internal fields.
+
+\begin{table}
+\begin{tabular}{ |p{0.2\linewidth}|p{0.7\linewidth}| }
+\hline
+\footnotesize \textbf{Name} & \footnotesize \textbf{Decription of Data} \\ \hline
+\footnotesize vCPU context & \footnotesize The array that stores the state of each vCPU register. \\ \hline
+\footnotesize VM info & \footnotesize The per-VM execution state metadata. \\ \hline
+\footnotesize NPT info & \footnotesize The NPT pool allocation status. \\ \hline
+\footnotesize PMEM info & \footnotesize The physical memory ownership and sharing status. \\ \hline
+\footnotesize SMMU info & \footnotesize The SMMU management and page tables metadata. \\ \hline
+\footnotesize SMMUPT info & \footnotesize The SMMU page table pool allocation status. \\ \hline
+\end{tabular}
+\vspace{0.2cm}
+\caption{\rustcore{} metadata}
+\label{tab:metadata}
+\vspace{-0.4cm}
+\end{table}
 
 \begin{listing}[ht]
     \begin{minted}{Rust}
