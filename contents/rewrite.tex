@@ -6,22 +6,10 @@
 %e.g. LTO.
 %Then we employ the two pass method.
 
-%\todo{TODO: The first sentence does not make sense, one cannot enhance the
-%security of SeKVM, it is formally verified. Also mention \rustsec{} has the
-%same design as SeKVM.}
 The goal of this work is to leverage Rust's safety features in a hypervisor TCB.
 Our Rust-based hypervisor, \rustsec{}, follows the design described in
 \autoref{sec:sekvmintro}, and is based upon the SeKVM implementation.
 %We experimented with its reduced TCB that is designed with security in mind.
-We first forward ported SeKVM from its original
-Linux 4.18 version to the newest long term support version Linux 5.15 at the
-time of development.
-By forward porting we benefit from Linux's advancements including performance
-optimizations such as Link-Time-Optimization (LTO) and energy aware scheduling.
-And new kernel security features including \code{clang} shadow call stacks,
-branch target identification, control flow integrity (CFI), ARM Memory Tagging
-Extension (MTE), ARM pointer authentication, and randomized stack offset per
-system call.
 
 %to take advantage of various new kernel features, for
 %example  for better performance, ARM Pointer Authentication (5.0), Energy Aware Scheduling (5.0)
@@ -31,6 +19,43 @@ Once the forward port of SeKVM to Linux 5.15 is done, we then rewrote
 the KVM TCB in Rust.
 This chapter describes the challenges that arose when implementing a
 Rust-based KVM TCB, and the techniques we employed to solve them.
+
+\section{Forward Porting SeKVM from Linux 4.18 to Linux 5.15}
+We first forward ported SeKVM from its original Linux 4.18 version to the
+newest long term support version Linux 5.15 at the time of development.
+By forward porting we benefit from Linux's advancements including performance
+optimizations such as Link-Time-Optimization (LTO) and energy aware scheduling.
+And new kernel security features including \code{clang} shadow call stacks,
+branch target identification, control flow integrity (CFI), ARM Memory Tagging
+Extension (MTE), ARM pointer authentication, and randomized stack offset per
+system call.
+
+SeKVM is based on the mainline KVM ARM in NVHE mode, therefore, to forward port
+it to a newer kernel version, APIs used by SeKVM must be updated. For example,
+the data cache flushing function \code{\_\_flush\_dcache\_area} is changed to
+\code{dcache\_clean\_inval\_poc} in Linux 5.15. We went through the entire
+SeKVM codebase to update all the outdated functions and macros.
+Moreover, a new KVM mode pkvm \cite{pkvm} is added to mainline KVM ARM in Linux
+5.11, we made sure the logic of SeKVM and pkvm is separated such that the two
+modes of operation can coexist in the codebase. This is done by checking for
+the kernel configuration at KVM initialization, if the configuration option for
+SeKVM is set, pkvm will not be initialized.
+Mainline KVM had also made the code that runs in ARM's hypervisor mode (EL2)
+more self-contained. A namespace is introduced for symbols belonging to EL2 to
+isolate kernel mode symbols and hypervisor mode symbols name-wise, a prefix
+\code{\_\_kvm\_nvhe\_} is prepended to all symbols in EL2.
+Parts of SeKVM that references symbols in the original NVHE KVM EL2 code then
+must adjust how it references those symbols, we use the predefined helper macro
+\code{CHOOSE\_NVHE\_SYM()} that prepends the prefix for referencing NVHE
+symbols to make our code cleaner and easier to maintain. For SeKVM symbols that
+need to be referenced by the original NVHE KVM EL2 code, we use the helper
+macro \code{KVM\_NVHE\_ALIAS()}, which creates another symbol referring to the
+same piece of data as the input symbol whose name is prepended by the NVHE
+prefix, so that the NVHE KVM EL2 code is able to reference it.
+Furthermore, to resolve the issue that the compiler optimizing struct zeroing
+operations with \code{memset} calls, which are not mapped in EL2, the C
+compiler flag \code{-ffreestanding} is included during the compilation of
+SeKVM.
 
 \section{Integrating Rust and Linux}
 
