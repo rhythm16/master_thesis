@@ -64,16 +64,20 @@ SeKVM.
 %solution: our way of source code organization, build system integration,
 %how we link Rust and C, data layout issues, etc.
 
-Linux 5.15, which is the latest long term support kernel version at the time of
-\rustsec{} development, does not support Rust as a development language.
-Therefore, we had to integrate Rust code with the rest of the Linux kernel.
-We implement \rustcore{} in a single crate on the \code{no\_std} environment
-and compile it into a single static library \code{libkrustvm.a}.
-The static library is then linked
-with the rest of the kernel to create the final kernel image.
-We created a new subdirectory in Linux's source path \code{arch/arm64/krustvm}.
-Within it contains the \rustcore{} crate and the \code{Makefile} for this
-directory. To integrate building \code{libkrustvm.a} and linking it with the
+In order to write a KVM TCB in Rust, Rust code must be compiled and linked with
+the rest of the Linux kernel.
+However, Linux 5.15, which is the latest long term support kernel version at
+the time of \rustsec{} development, does not support Rust as a development
+language. As a result, incorporating our Rust code into the kernel requires
+manual building and linking, which can be both laborious and susceptible to
+errors.
+To overcome this challenge, we the integrated the Rust toolchain with the Linux
+kernel build system. A new subdirectory in Linux's source path
+\code{arch/arm64/krustvm} is created. Within it contains the \rustcore{} crate
+and the \code{Makefile} for this directory.
+\rustcore{} is implemented in a single crate on the \code{no\_std} environment
+and compiled into a single static library \code{libkrustvm.a}.
+To integrate building \code{libkrustvm.a} and linking it with the
 rest of the kernel, we add following to the Makefile:
 \begin{enumerate}
 \item{append \code{libkrustvm.a} to Kbuild built-in object goals \code{obj-y} by adding the line \code{obj-y += libsekvmrs.a}}
