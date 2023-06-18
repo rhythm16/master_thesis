@@ -129,44 +129,6 @@ transfer the control flow to our Rust code.
 %The exception vectors are implemented in assembly, they call Rust
 %exception handlers after it switches the register context to EL2.
 
-\section{Bringing up \rustsec{} on Real Hardware}
-
-We chose the Raspberry Pi model 4B (Rpi-4B) to verify our implementation on
-real hardware.
-%This section describes the problem that occured when trying to run SeKVM on
-%Rpi-4B, and how we solved the issue.
-SeKVM's trusted core \secore{} originally reserved its private memory by
-defining global symbols whose addresses reside right after the kernel image,
-in the Linux kernel linker script.
-\secore{} then references those symbols to access and utilize the reserved
-memory.
-However, there exists an unusable hole in Rpi-4B's physical memory address
-space, and the bootloader of Rpi-4B places the kernel image before the hole,
-resulting in an overlap of \secore{}'s private memory and the unusable hole
-(\autoref{fig:overlap}). This makes SeKVM unable to initialize on Rpi-4B.
-
-\begin{figure}[hbtp]
-    \includegraphics[scale=0.60]{figures/overlap.pdf}
-    \caption{Kcore overlaps the unusable hole on Rpi-4B}
-    \label{fig:overlap}
-\end{figure}
-
-To solve this issue for \rustsec{}, instead of allocating memory in the linker
-script, we first locate a range of memory which does not overlap with the
-unusable hole of Rpi-4B and the kernel image, then add a new memblock that to
-correspond to the \rustcore{}'s private memory. We mark it as reserved by
-calling \code{memblock\_reserve}, so that the kernel does not accidentally
-access this memory range (\autoref{fig:rcorereserved}).
-The global symbols previously defined the Linux kernel linker script have also
-been changed to macros that expand into addresses in the reserved range for
-\rustsec{}'s \rustcore{} usage.
-
-\begin{figure}[H]
-    \includegraphics[scale=0.60]{figures/rcore_reserved.pdf}
-    \caption{Overlap prevention}
-    \label{fig:rcorereserved}
-\end{figure}
-
 \section{Rewriting C-based \secore{} into Rust-based \rustcore{}}
 
 %challenge: difficult to do a top-down design due to the difficulty to debug
@@ -274,4 +236,42 @@ first from reading the address of the extern static variable, then reading
 \code{TPIDR\_EL2} via inline assembly, and lastly, another \code{unsafe} to
 dereference the calculated address. Concurrent accesses will not pose a problem
 since each core accesses a different address.
+
+\section{Bringing up \rustsec{} on Real Hardware}
+
+We chose the Raspberry Pi model 4B (Rpi-4B) to verify our implementation on
+real hardware.
+%This section describes the problem that occured when trying to run SeKVM on
+%Rpi-4B, and how we solved the issue.
+SeKVM's trusted core \secore{} originally reserved its private memory by
+defining global symbols whose addresses reside right after the kernel image,
+in the Linux kernel linker script.
+\secore{} then references those symbols to access and utilize the reserved
+memory.
+However, there exists an unusable hole in Rpi-4B's physical memory address
+space, and the bootloader of Rpi-4B places the kernel image before the hole,
+resulting in an overlap of \secore{}'s private memory and the unusable hole
+(\autoref{fig:overlap}). This makes SeKVM unable to initialize on Rpi-4B.
+
+\begin{figure}[hbtp]
+    \includegraphics[scale=0.60]{figures/overlap.pdf}
+    \caption{Kcore overlaps the unusable hole on Rpi-4B}
+    \label{fig:overlap}
+\end{figure}
+
+To solve this issue for \rustsec{}, instead of allocating memory in the linker
+script, we first locate a range of memory which does not overlap with the
+unusable hole of Rpi-4B and the kernel image, then add a new memblock that to
+correspond to the \rustcore{}'s private memory. We mark it as reserved by
+calling \code{memblock\_reserve}, so that the kernel does not accidentally
+access this memory range (\autoref{fig:rcorereserved}).
+The global symbols previously defined the Linux kernel linker script have also
+been changed to macros that expand into addresses in the reserved range for
+\rustsec{}'s \rustcore{} usage.
+
+\begin{figure}[H]
+    \includegraphics[scale=0.60]{figures/rcore_reserved.pdf}
+    \caption{Overlap prevention}
+    \label{fig:rcorereserved}
+\end{figure}
 
