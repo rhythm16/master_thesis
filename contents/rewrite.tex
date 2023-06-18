@@ -98,37 +98,6 @@ The Makefile in \code{arch/arm64/krustvm} generates \code{krustvm.o},
 and the kernel build system will then link this file with all other object
 files in the kernel and produce the final kernel image.
 
-KVM separates EL2 code from EL1 by grouping EL2 code in a section
-\code{.hyp.text}, then mapping that section in EL2's address space at
-initialization.
-In \rustcore{}, attribute \code{\#[link\_section = ".hyp.text"]} is prepended
-to all code that should be run in EL2, so that they get placed in the
-\code{.hyp.text} section as well.
-Our implementation is compatible with the Linux kernel codebase. For example, we
-ensure the page size definition is identical in \rustcore{} and KVM.
-Also, we share types like \code{kvm\_vcpu} between Linux and \rustcore{}.
-These type definitions are generated automatically
-with the tool \code{bindgen}~\cite{bindgen}.
-For constants that are used by both Linux and \rustcore{},
-we copy them from C to Rust manually.
-Due to the limited support of macro in \code{bindgen}
-and the heavy usage of Linux,
-we do not use it to generate constants.
-Regarding alignment, field layout order, and padding of custom types,
-we use the Rust attribute \code{\#[repr\-(C)]}
-that ensures the data layout of the marked type has the same layout as in C.
-
-Whenever an exception gets taken to EL2, the CPU switches its exception level
-to EL2, saves the program status and exception syndrome, and jumps to the
-preassigned exception vector.
-We modify the exception vectors, which are written in assembly, to call
-\rustcore{}'s entry point functions instead of the original C handlers to
-transfer the control flow to our Rust code.
-%Rust functions in \rustcore{} are invoked in exception vectors.
-%This is the place where our Rust code in \rustcore{} comes into play.
-%The exception vectors are implemented in assembly, they call Rust
-%exception handlers after it switches the register context to EL2.
-
 \section{Rewriting C-based \secore{} into Rust-based \rustcore{}}
 
 %challenge: difficult to do a top-down design due to the difficulty to debug
@@ -138,6 +107,7 @@ transfer the control flow to our Rust code.
 %unsafe and redesign after we have a working Rust hypervisor, and leverage
 %Rust to achieve a stronger memory region isolation guarantee.
 
+\subsection{The Rewrite Process}
 Given the high complexity of the KVM hypervisor and \secore{},
 it is clear from the beginning that
 a top-down approach to a Rust rewrite would be error-prone and difficult to test.
@@ -154,8 +124,8 @@ We solve these issues by adding a second phase to the Rust rewrite;
 after the initial function by function rewrite, we removed unnecessary
 \code{unsafe} blocks, refactored the code to be more Rust-idiomatic,
 and leveraged Rust features to enhance \rustcore{} memory safety.
-We discuss the features used to secure \rustcore{} memory accesses in
-\autoref{sec:securercore}.
+%We discuss the features used to secure \rustcore{} memory accesses in
+%\autoref{sec:securercore}.
 
 \subsection{Rust Code Organization}
 
@@ -194,6 +164,40 @@ impl VMInfo {
     \label{lst:typemethod}
     \vspace{-0.2cm}
 \end{listing}
+
+\subsection{Rust-Rewrite Challenges}
+\textbf{Enforcing Linking Section.}
+KVM separates EL2 code from EL1 by grouping EL2 code in a section
+\code{.hyp.text}, then mapping that section in EL2's address space at
+initialization.
+In \rustcore{}, attribute \code{\#[link\_section = ".hyp.text"]} is prepended
+to all code that should be run in EL2, so that they get placed in the
+\code{.hyp.text} section as well.
+
+\textbf{Matching Linux Types and Constants.}
+Our implementation is compatible with the Linux kernel codebase. For example,
+we ensure the page size definition is identical in \rustcore{} and KVM.
+For types shared between Linux and \rustcore{} like \code{kvm\_vcpu}, the type
+definitions are generated automatically with the tool
+\code{bindgen}~\cite{bindgen}. And for constants that are used by both Linux
+and \rustcore{}, including the page size mentioned above, we copy them from C
+to Rust manually. Due to the limited support of macro in \code{bindgen} and its
+complex usages by Linux, we do not use it to generate constants.
+Regarding alignment, field layout order, and padding of custom types, the Rust
+attribute \code{\#[repr\-(C)]} is used. It ensures the data layout of the
+marked type has the same layout as in C.
+
+\textbf{Entry Point Binding.}
+Whenever an exception gets taken to EL2, the CPU switches its exception level
+to EL2, saves the program status and exception syndrome, and jumps to the
+preassigned exception vector.
+We modify the exception vectors, which are written in assembly, to call
+\rustcore{}'s entry point functions instead of the original C handlers to
+transfer the control flow to our Rust code.
+%Rust functions in \rustcore{} are invoked in exception vectors.
+%This is the place where our Rust code in \rustcore{} comes into play.
+%The exception vectors are implemented in assembly, they call Rust
+%exception handlers after it switches the register context to EL2.
 
 \subsection{Unsafe Rust Usages}
 
