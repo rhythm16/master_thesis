@@ -103,22 +103,20 @@ DMA attacks.
 %data race, and deadlock freedom.
 
 \section{The Rust Programming Language}
-Rust, compared to C,
-is a relatively young programming language aiming to be safe and fast.
-It enables programs to be memory-safe without requiring programmers to
-painstakingly manage memory, as in traditional languages (e.g., C/C++).
-Unlike other memory-safe languages (e.g., Python, Go, etc.),
-Rust does not leverage garbage collection mechanisms
-to ensure memory safety.
-Instead, it introduces the concepts of lifetimes and ownership
-to mandate the programmer to follow specific rules.
-This paradigm of statically enforcing programming rules
-empowers Rust to perform comparably to C since Rust's compiler has complete
-control over the code that
-runs during runtime and can optimize it accordingly.
-Additionally, Rust's safety rules ensure that
-no memory safety bugs will be present when satisfied,
-and the compiler automatically checks and prevents any violation of these rules.
+Rust is a relatively young programming language compared to C that aims to be
+safe and fast.
+It enables programs to be memory-safe without requiring programmers to manually
+manage memory as in traditional languages (e.g. C/C++).
+Different from other memory-safe languages such as Python or Go, Rust does not
+employ garbage collection for managing memory. Instead, the concepts of
+lifetimes, ownership, and borrowing rules are introduced to mandate the
+programmer to follow specific rules.
+This paradigm of statically enforcing programming rules empowers Rust to
+perform comparably to C since Rust's compiler has complete control over the
+code that runs during runtime and can optimize it accordingly.
+Additionally, Rust's safety rules ensure that no memory safety bugs will be
+present when satisfied, and the compiler automatically checks and prevents any
+violation of these rules.
 
 \textbf{Ownership and Lifetimes.}
 In Rust, each piece of data is said to be \textit{owned} by a single
@@ -253,56 +251,42 @@ behavior or memory safety bugs.
 The callee in the safe world hence bears no responsibility to ensure safety.
 
 \textbf{Interior Mutability.}
-Mutating the underlying data via an immutable reference
-is forbidden in Rust.
-However, this might be too restrictive for
-implementing efficient algorithms or data structures.
-For example, programmers might want to add a cache
-in a read-only search data structure
-to optimize the search time.
-Nevertheless, updating the state of the cache implies
-the need for mutability,
-which violates the read-only constraint.
-Hence, we need the ability to mutate states even under a read-only scene.
-To address this issue,
-the Rust standard library provides some special types
-that can mutate the underlying data
-even if we only have read-only access to the data holder.
-This design pattern is known as Interior Mutability.
-Implementing these types requires \code{unsafe} operations
-to bend Rust's usual rules that govern mutation and borrowing.
-To avoid violating the virtue of the Rust safety assumptions,
-these types ensure that the borrowing rules,
-i.e., one mutable borrower at the same time
-and no mutable borrowers when read-only borrowers exist,
-will be followed at runtime.
-If these rules get violated,
-the implementation of these types has the responsibility
-to stop the behavior to avoid safety issues.
-For example, the type \code{Mutex} in Rust is a type that provides
-interior mutability.
-It uses a lock to ensure that
-only one borrower of the inner data can appear simultaneously
-to enforce safe mutation of the inner data, even without explicit mutability to \code{Mutex}.
+Mutating referenced data via an immutable reference is forbidden in Rust.
+However, this is sometimes too restrictive for implementing efficient
+algorithms or data structures.
+For instance, a cache might be desirable for a read-only search data structure
+to optimize lookup time. Nevertheless, updating the cache state requires
+mutability for the cache, violating the read-only constraint.
+Hence, a mechanism is needed for mutating data under a read-only variable.
+The Rust standard library provides some special types that allow the user to
+modify data even with read-only access, to address this issue.
+This design pattern is known as \textit{Interior Mutability}.
+\code{unsafe} operations are used to implement these types to bend Rust's usual
+rules that govern mutation and borrowing.
+These types ensure the borrowing rules are followed, i.e. one mutable borrower
+at one time, and no mutable borrowers when read-only borrowers exist, at
+runtime. A panic occurs whenever the runtime checks fail, stopping the program
+to avoid safety issues. For example, \code{Mutex} in Rust provides interior
+mutability. A lock is used to ensure that only one borrower of the inner data
+exists at one time.
 More precisely, when attempting to borrow data that has already been borrowed,
-the \code{Mutex} enforces a busy wait until the data is returned,
-thereby allowing only one borrower at a time.
-However, if a thread borrows the inner data of \code{Mutex} while it is already borrowing it,
-\code{Mutex} will wait forever, i.e., result in a self-deadlock.
-\footnote{This is the behavior when using \texttt{\textcolor{gray}Mutex} on Linux.
-On Windows, \texttt{\textcolor{gray}Mutex} might panic.}
+the \code{Mutex} enforces a busy wait until the data is released, thereby
+allowing only one borrower at a time.
+However, if a thread borrows the inner data of \code{Mutex} while it is already
+borrowing it, \code{Mutex} will wait forever, i.e., result in a self-deadlock.
 
 \textbf{Generics and Traits.}
-In addition to the safety mechanisms, Rust, as a modern programming language,
-provides handy features to make programming easier.
-\code{Generic} allows code to work with type parameters,
-reducing the effort of writing similar code for multiple types.
-For example, using generics, the \code{Mutex} type can
-hold and lock any arbitrary type.
-Rust traits are properties or interfaces that can be implemented on types; traits typically require the implementing type
-to supply function implementations for its trait methods.
-Additionally, combined with \code{Generic},
-a trait can be treated as a restriction on type specifications such as function arguments or struct fields.
+In addition to the safety mechanisms, Rust also provides features for writing
+code that operates on values of many different types. \code{Generic} allows
+code to work with type parameters, reducing similar code that work with
+different types.
+For example, the vector type in Rust's standard library \code{std::vec::Vec}
+is capable of holding an array of an arbitrary type.
+Rust traits are properties or interfaces that can be implemented on types;
+traits typically require the implementing type to supply function
+implementations for its trait methods.
+Additionally, combined with \code{Generic}, a trait can be treated as a
+restriction on type specifications such as function arguments or struct fields.
 The restriction is called a \textit{trait bound}.
 For example, the \code{Clone} trait requires the implementing type
 to provide implementations for its \code{clone} and \code{clone\_from} functions
@@ -311,24 +295,26 @@ A \code{Generic} function or type can use a trait bound to
 require its type argument to implement \code{Clone},
 so that it can invoke the \code{clone} function that the argument implements.
 
-\textbf{Graceful Error Handling.}
-Rust offers a graceful approach to error handling.
-The \code{Result<T, E>} and \code{Option<T>} types in Rust
-explicitly admit the possibility of errors.
-\code{Re\-su\-lt} represents the outcome as either \code{Ok(T)} or \code{Err(E)},
-with \code{T} denoting the desired result
-and \code{E} representing the error reason.
-Programmers are obligated to handle \code{E} when accessing \code{T},
-and not doing so would result in a compilation error.
+\textbf{Error Handling.}
+Rust offers enum types \code{Result<T, E>} and \code{Option<T>} that have
+variants to explicitly represent the state of error.
+A \code{Result} type can be the enum variant \code{Ok(T)}, which denotes a
+proper result with type \code{T}, or \code{Err(E)}, which represents an error
+with reason of type \code{E}.
 To simplify error handling,
 Rust provides a convenient syntactic sugar,
 the \code{?} operator.
-It permits the retrieval of \code{T} from \code{Result} if it is \code{Ok(T)},
-or early return of \code{E} if it is \code{Err(E)}.
-Similarly, \code{Option} simplifies error handling with two possibilities:
-\code{Some(T)} or \code{None}, where \code{None} can signify a trivial error.
-These types prevent unexpected errors
-when accessing a potentially non-existing value in the program.
+When used on a \code{Result}, it retrieves the \code{T} from \code{Ok(T)}.
+However, if the \code{Result} is \code{Err(E)}, the \code{Err} variant is
+immediately returned from the enclosing function, propagating the error to the
+caller.
+When handling enum types, the program must handle all variants of the enum,
+and not doing so results in a compilation error, this enforces the programmer
+to handle all possible cases, including errors.
+Similarly, \code{Option} can have the \code{Some(T)} variant, or the
+\code{None} variant, which represents the state of not having a value.
+These types prevent unexpected errors when accessing a potentially non-existing
+value, or a potential error in the program.
 
 \textbf{Copy and Drop Traits.}
 Some traits in Rust have intrinsic meaning to the compiler. For example, the
