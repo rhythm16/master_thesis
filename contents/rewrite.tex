@@ -77,7 +77,7 @@ the time of \rustsec{} development, does not support Rust as a development
 language. As a result, incorporating our Rust code into the kernel requires
 manual building and linking, which can be both laborious and susceptible to
 errors.
-To overcome this challenge, we the integrated the Rust toolchain with the Linux
+To overcome this challenge, we integrated the Rust toolchain with the Linux
 kernel build system. A new subdirectory in Linux's source path
 \code{arch/arm64/krustvm} is created. Within it contains the \rustcore{} crate
 and the \code{Makefile} for this directory.

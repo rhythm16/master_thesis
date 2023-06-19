@@ -72,7 +72,8 @@ Further, raw pointer accesses, which are unsafe in Rust, are protected using
 Rust’s type system. In \rustcore{}, raw pointers are used for accessing
 physical memory. Physical memory is divided into multiple disjoint regions,
 and the \rustcore{} implementation guarantees that all memory accesses done by
-\rustcore{} are located in the predefined regions.
+\rustcore{} are located in the predefined regions, ensuring that bugs caused by
+pointers pointing to incorrect memory regions are prevented.
 This is done in two parts, for raw pointer accesses to the region which stores
 metadata used by \rustcore{}, called the \textit{\rustcore{} metadata region},
 these accesses are bound via a set of reference getter functions (RGF).
