@@ -71,13 +71,14 @@ isolation, such as separating the NPT pools into the first level NPT pool,
 second level NPT pool, and so on, or splitting the \rustcore{} metadata region
 into multiple isolated regions, such as \code{VMInfo} region, \code{PMemInfo}
 region, etc.
-In addition, the lifetime feature of Rust remains unexplored in our work.
-Unlike the spatial protection we achieved through the type system, there are
-possibilities for utilizing lifetime annotations on references to enforce
-temporal safety guarantees, such as preventing the usage of a resource before
-another a previous usage has gone out of scope. This type of lifetime
-utilization is independent of our spatial protection and has the potential to
-further enhance the safety of our code.
+%In addition, the lifetime feature of Rust remains unexplored in our work.
+%In contrast to the spatial protection achieved through memory region isolation,
+%there are opportunities to utilize lifetimes to enforce temporal safety
+%guarantees, such as preventing the usage of a reference before another
+%reference has gone out of scope. Leveraging lifetimes in this manner allows
+%for the implementation of lock order enforcement, among other possibilities.
+%This approach is separate from our spatial protection and holds the potential
+%to further enhance the safety of our code.
 
 %Other low-level system software may also benefit from a Rust rewrite.
 %
