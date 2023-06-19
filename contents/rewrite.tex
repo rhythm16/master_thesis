@@ -146,6 +146,17 @@ One of the modules is \code{VMInfo}, it includes the definition of the type
 \code{VMInfo}, which stores information of a VM including its VMID, state, and
 an array of VCPU states. The module also contains methods for reading the VMID,
 setting the state of the VM, etc.
+Another module aggregates the \rustcore{} metadata structures into a single big
+structure \code{RcoreMetadata} (line 1 in \autoref{lst:rcoremetadata}) to simplify
+the memory used by these metadata.
+All CPU cores share metadata in \rustcore{}; some are per CPU.
+Fields shared by all CPU cores in \code{RcoreMetadata} are defined as type \code{\lock{}<T>}
+(an example is line 3 in \autoref{lst:rcoremetadata}),
+where \code{T} is the type that actually stores \rustcore{} metadata.
+\rustcore{}'s custom \code{\lock{}} is a generic type which can hold any
+arbitrary type alongside a lock.
+The only way to access the data wrapped in \code{\lock{}} is by calling the
+\code{lock} method of \code{\lock{}} reference.
 Different from Rust, C does not support methods for structs, it therefore lacks
 the ability to present an API that provides type-specific functionalities while
 abstracting away how the implementation manipulates the structure's data.
@@ -171,6 +182,22 @@ read-only fields, and reading internal fields.
 \label{tab:metadata}
 \vspace{-0.4cm}
 \end{table}
+
+\begin{listing}[ht]
+    \begin{minted}{Rust}
+struct RcoreMetadata {
+  [...] // other fields omitted
+  pub pmem_info: KMutex<PMemInfo>,
+  [...] // other fields omitted
+}
+
+const RCORE_METADATA_PTR: *mut RcoreMetadata = /* Rcore's memory address */;
+
+    \end{minted}
+    \caption{\rustcore{} metadata}
+    \label{lst:rcoremetadata}
+    \vspace{-0.2cm}
+\end{listing}
 
 \begin{listing}[ht]
     \begin{minted}{Rust}

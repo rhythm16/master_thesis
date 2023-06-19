@@ -7,6 +7,26 @@
 %Rust has safe and unsafe code -> segregate unsafe code so that most of the
 %hypervisor is written in safe Rust
 
+%What did we do? (solution, method)
+%categorize \rustcore{} mem accesses into disjoint regions
+%Effect?
+%guarantee raw pointers dont cross region boundaries
+%
+%Why do this?
+Numerous software bugs arise from the disparity between the address to which a
+pointer is pointing and the intended address it should be pointing to.
+For example, NPT walking code must calculate addresses of each level's page
+table entry. If the address calculation is erroneous, the NPT walking code may
+dereference the pointer which points to an unrelated region of memory, and
+write to guest memory, or other hypervisor metadata, leading to crashes or
+vulnerabilities.
+To tackle these kinds of bugs, \rustcore{}'s memory accesses are categorized
+into disjoint regions, and raw pointer accesses are guaranteed to not cross
+memory region boundaries. \autoref{sec:rcoreregions} describes each of the
+memory region we defined for \rustcore{}'s memory accesses, and
+\autoref{sec:memiso} presents how raw pointers are guaranteed to access the
+intended region.
+
 \section{\rustcore{} Memory Regions}
 \label{sec:rcoreregions}
 
@@ -45,19 +65,23 @@ before transferring ownership from a guest back to the host during VM terminatio
 \label{fig:regions}
 \end{figure}
 
-\section{\rustcore{} Metadata and Reference Getter Functions}
-We aggregate \rustcore{} metadata structures
-into a single big structure \code{RcoreMetadata}
-(line 1 in \autoref{lst:getternew})
-to simplify the memory region used by these metadata.
-All CPU cores share metadata in \rustcore{}; some are per CPU.
-Fields shared by all CPU cores in \code{RcoreMetadata} are defined as type \code{\lock{}<T>}
-(an example is line 3 in \autoref{lst:getternew}),
-where \code{T} is the type that actually stores \rustcore{} metadata.
-\rustcore{}'s custom \code{\lock{}} is a generic type which can hold any
-arbitrary type alongside a lock.
-The only way to access the data wrapped in \code{\lock{}} is by calling the
-\code{lock} method of \code{\lock{}} reference.
+\section{Memory Region Isolation}
+\label{sec:memiso}
+
+Raw pointers are types in Rust that are not checked by Rust's aliasing xor
+mutability rule, meaning there can be multiple raw pointers pointing to the
+same piece of data. Further, raw pointers are also nullable. The relaxation of
+these safety rules opens up the potential for null pointer dereferences or
+use-after-free memory bugs when raw pointers are accessed. Hence, raw pointer
+accesses are prohibited in safe Rust.
+As detailed in the upcoming paragraphs, we examine the need for raw pointers
+for accessing the four regions described in \autoref{sec:rcoreregions} and the
+measures taken to guarantee their isolation, even when employing unsafe Rust in
+their implementation. We also deliberately made the amount of unsafe code that
+contains raw pointer accesses small ($\sim$50 LOC).
+
+\subsection{Raw Pointer Access: \rustcore{} Metadata}
+%\section{\rustcore{} Metadata and Reference Getter Functions}
 Since there is no existing memory allocator in a hypervisor environment,
 we directly inform where in the address space \rustcore{} should use.
 Specifically, we pre-defined the address to the instance of \code{RcoreMetadata}
@@ -73,8 +97,8 @@ can use the RGFs to safely access \code{RcoreMetadata} with safe Rust.
 %unsafe Rust by implementing a set of reference getter functions (RGFs) that
 %the \funcl{} layer can call.
 Each RGF returns a mutable reference to one of the fields in \code{RcoreMetadata},
-line 10 of \autoref{lst:getternew} is an example of an RGF, it returns the mutable reference
-of the type \code{\lock{}<PMemInfo>}. The RGF is implemented by:
+line 2 of \autoref{lst:getternew} is an example of an RGF, it returns the
+mutable reference of the type \code{\lock{}<PMemInfo>}. The RGF is implemented by:
 
 \begin{enumerate}
   \item dereference the raw pointer using the \code{*} operator
@@ -90,14 +114,6 @@ them.
 
 \begin{listing}[ht]
     \begin{minted}{Rust}
-struct RcoreMetadata {
-  [...] // other fields omitted
-  pub pmem_info: KMutex<PMemInfo>,
-  [...] // other fields omitted
-}
-
-const RCORE_METADATA_PTR: *mut RcoreMetadata = /* Rcore's memory address */;
-
 // the RGF of pmem_info
 pub fn get_pmem_info<T: CanGetPMemInfo>(_: &mut T) -> &mut KMutex<PMemInfo> {
   // SAFETY: The pointer points to an initialized memory.
@@ -108,28 +124,11 @@ pub fn get_pmem_info<T: CanGetPMemInfo>(_: &mut T) -> &mut KMutex<PMemInfo> {
   }
 }
     \end{minted}
-    \caption{\rustcore{} metadata and Reference Getter Function}
+    \caption{\rustcore{} Reference Getter Function}
     \label{lst:getternew}
     \vspace{-0.2cm}
 \end{listing}
 
-\section{Memory Region Isolation}
-\label{sec:memiso}
-
-Raw pointers are types in Rust that are not checked by Rust's aliasing xor
-mutability rule, meaning there can be multiple raw pointers pointing to the
-same piece of data. Further, raw pointers are also nullable. The relaxation of
-these safety rules opens up the potential for null pointer dereferences or
-use-after-free memory bugs when raw pointers are accessed. Hence, raw pointer
-accesses are prohibited in safe Rust.
-As detailed in the upcoming paragraphs, we examine the need
-for raw pointers for accessing the four regions described in \autoref{sec:rcoreregions}
-and the measures taken to guarantee their isolation,
-even when employing unsafe Rust in their implementation.
-We also deliberately made the
-amount of unsafe code that contains raw pointer accesses small ($\sim$50 LOC).
-
-\textbf{Raw Pointer Access: \rustcore{} Metadata.}
 The RGFs return mutable references from a raw pointer, thus encapsulating the
 raw pointer usages when the caller wishes to access \rustcore{} metadata
 (\code{RcoreMetadata}).
@@ -144,7 +143,7 @@ host Linux kernel for \rustcore{} and comparing the addresses with the page tabl
 Hence, it is impossible for \rustcore{} metadata accesses to access
 the other three regions accidentally.
 
-\textbf{Raw Pointer Access: Generic Area.}
+\subsection{Raw Pointer Access: Generic Area}
 Generic area accesses are done by calculating raw addresses and writing to them
 via raw pointers. Raw pointers are necessary here because system RAM is just a
 range of flat address space to \rustcore{}. To ensure that code accessing the
@@ -224,7 +223,7 @@ fn clear_page(pfn: usize) -> Result<()> {
     \vspace{-0.2cm}
 \end{listing}
 
-\textbf{Raw Pointer Access: Page Table Pool.}
+\subsection{Raw Pointer Access: Page Table Pool}
 \rustcore{} manages the host's and each VM's NPTs to control their access to
 physical memory. SMMU page tables control I/O devices' memory access.
 We also leveraged Rust's type system and created the
@@ -241,7 +240,7 @@ checks so for example the NPT walking code,
 can guarantee it is accessing NPT entries in the
 \rustcore{} page table pool area by using \code{PTEAddr}.
 
-\textbf{Raw Pointer Access: SMMU.}
+\subsection{Raw Pointer Access: SMMU}
 In a manner analogous to the generic area and page table pool, the type
 \code{SMMURegion} for accessing SMMU is created.
 \rustcore{} uses \code{SMMURegion} whenever it reads or writes SMMU registers.
