@@ -15,16 +15,16 @@ integrates an entire Linux OS kernel inside its TCB. Attackers that
 successfully exploit hypervisor vulnerabilities may gain the ability
 to steal or modify secret VM data.
 
-Previous work~\cite{hypsec} has retrofitted commodity hypervisors into a small
-trusted core that enforces resource access control to ensure the
+Previous work HypSec~\cite{hypsec} has retrofitted commodity hypervisors into a
+small trusted core that enforces resource access control to ensure the
 confidentiality and integrity of VM data against hypervisor and host operating
 system exploits. However, the security of the whole system still depends on the
 implementation of the small trusted TCB. Any vulnerability in the trusted TCB
 can void the guarantees of VM data confidentiality and integrity.
-While~\cite{sekvm} extended the work of~\cite{hypsec} by formally verifying the
-smaller TCB, the approach is not scalable since all code modifications
-including the addition of new features, or code refactoring, requires a new
-proof.
+While SeKVM~\cite{sekvm} extended the work of HypSec~\cite{hypsec} by formally
+verifying the smaller TCB, the approach is not scalable since all code
+modifications including the addition of new features, or code refactoring,
+requires a new proof.
 
 Rust is an emerging programming language that ensures strong memory safety
 guarantees at compile time while offering performance efficiency.
@@ -61,8 +61,8 @@ The resulting hypervisor, \rustsec{}, incorporates the small Rust TCB
 protect VM confidentiality and integrity against the large and untrusted
 hypervisor codebase that encompasses KVM’s host Linux kernel.
 We identified and overcame the challenges that arose when trying to
-incorporate a Rust TCB inside Linux, bring up \rustsec{} on real hardware, and
-rewrite SeKVM's TCB in Rust.
+incorporate a Rust TCB inside Linux, rewrite SeKVM's TCB in Rust, and bring up
+\rustsec{} on real hardware.
 We implemented \rustcore{} is a way such that the amount of unsafe Rust is
 minimized.
 Unsafe code are enclosed within a safe abstraction and a safe API is exposed
