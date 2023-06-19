@@ -6,29 +6,29 @@
 %e.g. LTO.
 %Then we employ the two pass method.
 
+%The goal of this work is to leverage Rust's safety features in a hypervisor TCB.
+%Our Rust-based hypervisor, \rustsec{}, follows the design described in
+%\autoref{sec:sekvmintro}, and is based upon the SeKVM implementation.
+
 The goal of this work is to leverage Rust's safety features in a hypervisor TCB.
-Our Rust-based hypervisor, \rustsec{}, follows the design described in
-\autoref{sec:sekvmintro}, and is based upon the SeKVM implementation.
-%We experimented with its reduced TCB that is designed with security in mind.
-
-%to take advantage of various new kernel features, for
-%example  for better performance, ARM Pointer Authentication (5.0), Energy Aware Scheduling (5.0)
-%clang shadow call stack, branch target identification (5.8), MTE (5.10), clang CFI (5.13), randomized stack offset per syscall (5.13)
-
-Once the forward port of SeKVM to Linux 5.15 is done, we then rewrote
-the KVM TCB in Rust.
-This chapter describes the challenges that arose when implementing a
-Rust-based KVM TCB, and the techniques we employed to solve them.
-
-\section{Forward Porting SeKVM from Linux 4.18 to Linux 5.15}
+Our Rust-based hypervisor, \rustsec{}, is based upon the SeKVM implementation.
 We first forward ported SeKVM from its original Linux 4.18 version to the
 newest long term support version Linux 5.15 at the time of development.
+Once the forward port of SeKVM to Linux 5.15 is done, we then rewrote the SeKVM
+TCB \secore{} in Rust. This chapter describes the challenges that arose when
+implementing a Rust-based KVM TCB, and the techniques we employed to solve them.
+
+\section{Forward Porting SeKVM from Linux 4.18 to Linux 5.15}
 By forward porting we benefit from Linux's advancements including performance
 optimizations such as Link-Time-Optimization (LTO) and energy aware scheduling.
 And new kernel security features including \code{clang} shadow call stacks,
 branch target identification, control flow integrity (CFI), ARM Memory Tagging
 Extension (MTE), ARM pointer authentication, and randomized stack offset per
 system call.
+
+%to take advantage of various new kernel features, for
+%example  for better performance, ARM Pointer Authentication (5.0), Energy Aware Scheduling (5.0)
+%clang shadow call stack, branch target identification (5.8), MTE (5.10), clang CFI (5.13), randomized stack offset per syscall (5.13)
 
 SeKVM is based on the mainline KVM ARM in NVHE mode, therefore, to forward port
 it to a newer kernel version, APIs used by SeKVM must be updated. For example,
