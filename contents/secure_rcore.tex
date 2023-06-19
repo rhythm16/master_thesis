@@ -25,7 +25,7 @@ for NPTs and SMMU page tables so that \rustcore{} has complete control
 over the permissions and the virtual-to-physical mappings of the memory
 accessed by the host Linux kernel, VMs, and I/O devices. The \rustcore{} metadata,
 on the other hand, is used for storing \rustcore{} metadata described in
-\autoref{sec:RCO}
+\autoref{sec:RCO}.
 
 \textbf{SMMU Area.}
 SMMU is accessed via MMIOs. \rustcore{} unmaps the SMMU
@@ -114,9 +114,15 @@ pub fn get_pmem_info<T: CanGetPMemInfo>(_: &mut T) -> &mut KMutex<PMemInfo> {
 \end{listing}
 
 \section{Memory Region Isolation}
+\label{sec:memiso}
 
-Raw pointer accesses are prohibited in safe Rust as they easily violate Rust’s
-ownership model. As detailed in the upcoming paragraphs, we examine the need
+Raw pointers are types in Rust that are not checked by Rust's aliasing xor
+mutability rule, meaning there can be multiple raw pointers pointing to the
+same piece of data. Further, raw pointers are also nullable. The relaxation of
+these safety rules opens up the potential for null pointer dereferences or
+use-after-free memory bugs when raw pointers are accessed. Hence, raw pointer
+accesses are prohibited in safe Rust.
+As detailed in the upcoming paragraphs, we examine the need
 for raw pointers for accessing the four regions described in \autoref{sec:rcoreregions}
 and the measures taken to guarantee their isolation,
 even when employing unsafe Rust in their implementation.
