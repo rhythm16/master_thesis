@@ -18,7 +18,7 @@ newest long term support version Linux 5.15 at the time of development.
 Once the forward port of SeKVM to Linux 5.15 is done, we then rewrote the SeKVM
 TCB \secore{} in Rust to create \rustcore{}, \rustsec{}'s TCB. This chapter
 describes the challenges that arose when implementing a Rust-based KVM TCB, and
-the techniques we employed to solve them.
+the techniques employed to solve them.
 
 \section{Forward Porting SeKVM from Linux 4.18 to Linux 5.15}
 The Linux kernel gained many new features between version 4.18 and 5.15,
@@ -37,8 +37,8 @@ the codebase can benefit from these advancements.
 SeKVM is based on the mainline KVM ARM in NVHE mode, therefore, to forward port
 it to a newer kernel version, APIs used by SeKVM must be updated. For example,
 the data cache flushing function \code{\_\_flush\_dcache\_area} is changed to
-\code{dcache\_clean\_inval\_poc} in Linux 5.15. We went through the entire
-SeKVM codebase to update all the outdated functions and macros.
+\code{dcache\_clean\_inval\_poc} in Linux 5.15.
+All outdated functions and macros in the SeKVM codebase are updated.
 Moreover, a new KVM mode pkvm \cite{pkvm} is added to mainline KVM ARM in Linux
 5.11, we made sure the logic of SeKVM and pkvm is separated such that the two
 modes of operation can coexist in the codebase. This is done by checking for
@@ -49,13 +49,13 @@ more self-contained. A namespace is introduced for symbols belonging to EL2 to
 isolate kernel mode symbols and hypervisor mode symbols name-wise, a prefix
 \code{\_\_kvm\_nvhe\_} is prepended to all symbols in EL2.
 Parts of SeKVM that references symbols in the original NVHE KVM EL2 code then
-must adjust how it references those symbols, we use the predefined helper macro
-\code{CHOOSE\_NVHE\_SYM()} that prepends the prefix (\code{\_\_kvm\_nvhe\_})
-for referencing NVHE symbols so that we do not have to write
-\code{\_\_kvm\_nvhe\_} everytime the code references a NVHE symbol. This makes
+must adjust how it references those symbols, the predefined helper macro
+\code{CHOOSE\_NVHE\_SYM()} is used, it prepends the prefix (\code{\_\_kvm\_nvhe\_})
+for referencing NVHE symbols so that it is not required to write
+\code{\_\_kvm\_nvhe\_} every time the code references a NVHE symbol. This makes
 our code cleaner and easier to maintain. For SeKVM symbols that
-need to be referenced by the original NVHE KVM EL2 code, we use the helper
-macro \code{KVM\_NVHE\_ALIAS()}, which creates an additional symbol referring to the
+need to be referenced by the original NVHE KVM EL2 code, in this case, the helper
+macro \code{KVM\_NVHE\_ALIAS()} is used, which creates an additional symbol referring to the
 same piece of data as the input symbol whose name is prepended by the NVHE
 prefix, enabling the NVHE KVM EL2 code to reference it.
 Furthermore, to resolve the issue that the compiler optimizing struct zeroing
@@ -84,7 +84,7 @@ and the \code{Makefile} for this directory.
 \rustcore{} is implemented in a single crate on the \code{no\_std} environment
 and compiled into a single static library \code{libkrustvm.a}.
 To integrate building \code{libkrustvm.a} and linking it with the
-rest of the kernel, we add following to the Makefile:
+rest of the kernel, the following is added to the Makefile:
 \begin{enumerate}
 \item{append \code{libkrustvm.a} to Kbuild built-in object goals \code{obj-y} by adding the line \code{obj-y += libsekvmrs.a}}
 \item{define Makefile target
@@ -126,7 +126,7 @@ reducing the risk of introducing bugs.
 One major downside of this approach is the difficulty of rewriting individual
 functions in a manner that adheres to Rust's idiomatic practices.
 Furthermore, it may result in a lot of \code{unsafe} blocks.
-We solve these issues by adding a second phase to the Rust rewrite;
+These issues are solved by adding a second phase to the Rust rewrite;
 after the initial function by function rewrite, we removed unnecessary
 \code{unsafe} blocks, refactored the code to be more Rust-idiomatic,
 and leveraged Rust features to enhance \rustcore{} memory safety.
@@ -236,13 +236,13 @@ to all code that should be run in EL2, so that they get placed in the
 
 \textbf{Matching Linux Types and Constants.}
 Our implementation is compatible with the Linux kernel codebase. For example,
-we ensure the page size definition is identical in \rustcore{} and KVM.
+the page size definition is identical in \rustcore{} and KVM.
 For types shared between Linux and \rustcore{} like \code{kvm\_vcpu}, the type
 definitions are generated automatically with the tool
 \code{bindgen}~\cite{bindgen}. And for constants that are used by both Linux
-and \rustcore{}, including the page size mentioned above, we copy them from C
+and \rustcore{}, including the page size mentioned above, they are copied from C
 to Rust manually. Due to the limited support of macro in \code{bindgen} and its
-complex usages by Linux, we do not use it to generate constants.
+complex usages by Linux, it is not used to generate constants.
 Regarding alignment, field layout order, and padding of custom types, the Rust
 attribute \code{\#[repr\-(C)]} is used. It ensures the data layout of the
 marked type has the same layout as in C.
@@ -265,8 +265,8 @@ A small part of \rustcore{}'s implementation is coded in unsafe Rust.
 The source of unsafe Rust includes inline assembly, the Foreign Function
 Interface (FFI), KVM ARM Per-CPU variables, and raw pointer accesses.
 The first three categories are discussed in this section,
-and for raw pointer usages, \autoref{sec:securercore} shows how we check for
-each raw pointer usage scenario and guarantee their memory safety.
+and for raw pointer usages, \autoref{sec:securercore} shows how each raw
+pointer usage scenario is checked to guarantee their memory safety.
 
 \textbf{Inline Assembly.}
 Inline assembly are used for system instructions and system register accesses.

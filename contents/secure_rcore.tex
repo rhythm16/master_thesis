@@ -23,7 +23,7 @@ vulnerabilities.
 To tackle these kinds of bugs, \rustcore{}'s memory accesses are categorized
 into disjoint regions, and raw pointer accesses are guaranteed to not cross
 memory region boundaries. \autoref{sec:rcoreregions} describes each of the
-memory region we defined for \rustcore{}'s memory accesses, and
+memory region defined for \rustcore{}'s memory accesses, and
 \autoref{sec:memiso} presents how raw pointers are guaranteed to access the
 intended region.
 
@@ -77,21 +77,21 @@ accesses are prohibited in safe Rust.
 As detailed in the upcoming paragraphs, we examine the need for raw pointers
 for accessing the four regions described in \autoref{sec:rcoreregions} and the
 measures taken to guarantee their isolation, even when employing unsafe Rust in
-their implementation. We also deliberately made the amount of unsafe code that
-contains raw pointer accesses small ($\sim$50 LOC).
+their implementation. The amount of unsafe code that contains raw pointer
+accesses is also deliberately made small ($\sim$50 LOC).
 
 \subsection{Raw Pointer Access: \rustcore{} Metadata}
 %\section{\rustcore{} Metadata and Reference Getter Functions}
 Since there is no existing memory allocator in a hypervisor environment,
 we directly inform where in the address space \rustcore{} should use.
-Specifically, we pre-defined the address to the instance of \code{RcoreMetadata}
-and manually initialize this memory region at boot time,
+Specifically, the address to the instance of \code{RcoreMetadata} is
+pre-defined, and the memory region is manually initialized at boot time,
 so it can be used safely thereby.
-Using that raw address, we implemented several functions that
+Using that raw address, several functions are implemented that
 transform the raw pointer to \code{RcoreMetadata} into mutable references to
 each of its fields and return them to the caller.
 
-We implement a set of reference getter functions (RGFs). \rustcore{}
+A set of reference getter functions (RGFs) is implemented. \rustcore{}
 can use the RGFs to safely access \code{RcoreMetadata} with safe Rust.
 %We enable the \funcl{} layer to safely access \code{RcoreMetadata}, without any
 %unsafe Rust by implementing a set of reference getter functions (RGFs) that
@@ -164,7 +164,7 @@ The \code{GenericPhysRegion::new()} function is called at line 2 with the
 physical address of the page (\code{pfn << PAGE\_SHIFT}) and its size
 (\code{PAGE\_SIZE}) as arguments and returns a type of
 \code{Option<GenericPhysRegion>}.
-Next, we transform \code{Option} to \code{Result} type through \code{ok\_or}.
+Next, \code{Option} is transformed to \code{Result} type through \code{ok\_or}.
 and use the \code{?} operator on the \code{Result} type to return the
 contained value to \code{page} if it is an \code{Ok} variant.
 Otherwise, \code{clear\_page} immediately returns \code{Err\-or}

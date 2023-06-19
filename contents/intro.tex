@@ -51,10 +51,10 @@ benefits from the strong safety guarantees that Rust automatically provides.
 %Our work leverages the Rust programming language and rewrite SeKVM \cite{sekvm},
 %a secure Linux KVM hypervisor in Rust, so that the resulting hypervisor
 %benefits from the strong safety guarantees that Rust automatically provides.
-We build upon the work of SeKVM \cite{sekvm}. We initially forward ported SeKVM
+We build upon the work of SeKVM \cite{sekvm} and forward ported SeKVM
 from Linux 4.18 to Linux 5.15, to take advantage of new kernel features
 including Link-Time-Optimization (LTO) and energy-aware scheduling. SeKVM's
-verified TCB \textit{\secore{}} is then rewritten in Rust, which we call
+verified TCB \textit{\secore{}} is then rewritten in Rust, which is called
 \textit{\rustcore{}}.
 The resulting hypervisor, \rustsec{}, incorporates the small Rust TCB
 \rustcore{} to
@@ -63,7 +63,7 @@ hypervisor codebase that encompasses KVM’s host Linux kernel.
 We identified and overcame the challenges that arose when trying to
 incorporate a Rust TCB inside Linux, rewrite SeKVM's TCB in Rust, and bring up
 \rustsec{} on real hardware.
-We implemented \rustcore{} is a way such that the amount of unsafe Rust is
+\rustcore{} is implemented in a way such that the amount of unsafe Rust is
 minimized.
 Unsafe code are enclosed within a safe abstraction and a safe API is exposed
 in order to implement complex functionalities in safe Rust, including CPU,
@@ -93,7 +93,7 @@ each memory region via the corresponding type.
 % describe the benefits
 %We spent less than one person year rewriting SeKVM into \rustsec{}.
 By rewriting a C-based hypervisor to a Rust-based implementation,
-we shift the responsibility of human auditing to the compiler.
+the responsibility of human auditing is shifted to the compiler.
 This results in safer code and a more straightforward development process.
 Performance evaluation of \rustsec{} on real Arm64 hardware shows that
 \rustsec{} incurs modest performance overhead to application workloads
@@ -104,7 +104,7 @@ The rest of the thesis will be organized as follows. Background
 will be reviewed in \autoref{sec:bg}. Our threat model and assumptions are
 listed in \autoref{sec:threatmodel}. The process of implementing a Rust TCB
 for KVM and the techniques used are described in \autoref{sec:rewrite}.
-\autoref{sec:securercore} presents how we utilize Rust's safety features to
+\autoref{sec:securercore} presents how Rust's safety features are utilized to
 design and secure \rustcore{} memory accesses.
 Evaluation of \rustsec{} and its comparison with mainline KVM and SeKVM is
 covered in \autoref{sec:eval}. Related work and future work are discussed in

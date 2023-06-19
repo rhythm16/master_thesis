@@ -5,7 +5,7 @@ We evaluated the performance of various application benchmarks
 on a VM running on \rustsec{}, SeKVM, and mainline KVM.
 We also tested the same
 benchmarks on bare metal environment performances to establish a baseline
-reference of the benchmark results. We ran the workloads on the Raspberry
+reference of the benchmark results. The workloads were run on the Raspberry
 Pi 4 model B development board, with a Broadcom BCM2711, quad-core
 Cortex-A72 (ARM v8) 64-bit SoC at 1.5GHz, 4GB of RAM, and a 1 GbE NIC device.
 
@@ -18,7 +18,7 @@ the Linux guest kernel to enable virtio.
 while clang 15.0.0 was used to compile the remaining components of
 \rustsec{}, SeKVM, and the mainline KVM.
 
-We configured the hardware with 2 physical CPUs and 1 GB of RAM for the bare
+2 physical CPUs and 1 GB of RAM is configured for the bare
 metal setup. Each VM that equips with 2 virtual CPUs for the VM setup, and 1
 GB of RAM runs on the full hardware available.
 
