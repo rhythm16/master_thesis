@@ -5,8 +5,59 @@
 \label{sec:bg}
 
 \section{Overview of the ARM Architecture}
+\label{sec:armarch}
 
-overview of the architecture, and include virtualization extension and VHE
+%overview of the architecture, and include virtualization extension and VHE
+Our work is based on the ARM architecture for its mass adoption in mobile
+devices, and its rising popularity among major cloud providers
+\cite{armaws, armgooglecloud}. Different from x86, the ARM architecture has a
+larger general register count, fixed length instructions, and simpler
+instructions. These properties stem from ARM's original Reduced Instruction
+Set Computer (RISC) design. CPU privilege levels in ARM are referred as
+\textit{Exception Levels} (EL), and there are four of them: EL0, EL1, EL2, EL3.
+The larger the exception level number, the greater the privilege. EL0 is the
+lowest privilege level designed for userspace software, the \code{svc} instruction
+(supervisor call) can be issued is this EL to trap to EL1 for system call
+service. EL1 is regularly used for running an OS kernel like the Linux kernel.
+EL1 controls EL0/1 page tables to enable virtual memory for userspace and the
+kernel space,
+and sets up the exception vectors to handle EL0 and EL1 exceptions. EL1 can
+also ask for EL2 service via the \code{hvc} instruction (hypervisor call). EL2
+is designed for running a hypervisor. It is more privileged than EL1, software
+EL2 is capable of setting various conditions for the hardware to trap to EL2 to
+intervene the lower EL1 and EL0 execution. For example, it is capable of
+redirecting all device interrupts to EL2's own exception vector to interpose
+all interrupts. ARM also provides Nested Page Table (NPT) support in EL2. If
+EL2 enables NPTs, the physical address that results from an EL0/1 page table walk
+becomes the \textit{Intermediate Physical Address} (IPA), the IPA must then be
+translated again by the additional set of page tables set up by the software in
+EL2 to finally get the physical address used for memory access. The address
+translation turns into a two stage process, firstly the EL0/1 virtual address
+is translated into IPA by walking the EL0/1 page table controlled by the kernel
+in EL1, after that it is translated again by walking the NPT. Thus, when a
+hypervisor enables NPT, all guest kernels in EL1 only see its own virtual guest
+physical address space. The hypervisor has full control over the physical
+memory. Lastly, EL3 is the highest privilege level typically used for running
+system firmware that initializes the hardware. The
+\textit{Virtualization Host Extensions} (VHE) is an ARM architecture extension
+added to support running an unmodified OS kernel designed for an EL1
+environment directly in EL2. The extension is needed because
+originally, EL2 differs from EL1 in a few ways. First, EL1 has two
+\textit{Translation Table Base Registers} (TTBRs), while EL2 only has one. It
+was designed like this because OS kernels running in EL1 need the extra base
+register to separate user process address space and kernel address space, and
+hypervisors normally do not host applications. Second, there is no
+\textit{Address Space Identifiers} (ASIDs) support in EL2 for the same reason.
+Third, the bit layout of some system registers and page table format in EL2 are
+different from their EL1 counterparts.
+%These limitations made it difficult for
+%a kernel previously designed for an EL1 environment to run in EL2 without
+%modifications.
+%The ARM architecture was later extended with \textit{Virtualization Host Extensions} (VHE).
+VHE addresses the problems above by adding another TTBR, ASID support, and
+synchronized the bit layout of EL2 and EL1 system registers and the page table
+formats. On hardware that support VHE, the Linux kernel can thus boot in both
+EL1 and EL2.
 
 \section{KVM ARM}
 
