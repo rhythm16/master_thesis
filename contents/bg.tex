@@ -89,11 +89,37 @@ was then further developed to support both the new VHE feature (VHE mode),
 while keeping the option for the original split-mode virtualization, or Non-VHE
 (NVHE) mode.
 
-%code reuse, small layer lowvisor in EL2, less intrusive change
-
 \section{HypSec}
 
-HypSec design overview, retrofitted KVM ARM
+HypSec is a new hypervisor design which uses microkernel principles to reduce
+the trusted computing base of the hypervisor while protecting the
+confidentiality and integrity of VM data. It is motivated by the fact that as
+hypervisors become more complex, their ever-growing large codebases expose a
+huge attack surface for adversaries. HypSec restructures the large monolithic
+hypervisor into a minimized trusted core, the \textit{corevisor} and the
+remaining large untrusted host, the \textit{hostvisor}.
+The corevisor is reduced by separating access control from resource allocation.
+The corevisor has full access to hardware resources to perform access control
+to protect VM data.
+On the other hand, I/O, interrupt virtualization and resource management such
+as CPU scheduling, memory management, and device management are delegated to
+the hostvisor, which can leverage a host OS.
+The corevisor executes at a higher CPU privilege level than the hostvisor,
+it deprivileges the hostvisor at a lower privileged level, ensuring
+the untrusted host cannot disable or control privileged hardware features.
+NPTs are enabled by the corevisor when running the hostvisor and VMs so that
+they do not have direct access to physical memory.
+The corevisor unmaps its own private memory pages from the respective NPTs,
+making them inaccessible to VMs and the hostvisor. The corevisor unmaps a given
+VM's memory pages from the hostvisor or other VMs' NPTs to isolate these pages.
+NPTs for the hostvisor and VMs are allocated from the corevisor's memory pool,
+to which the host and VMs have no access. Since VM and corevisor memory is
+unmapped from the host NPT, a compromised hostvisor that accesses these memory
+pages causes an NPT fault that traps to the corevisor. NPT faults are routed to
+the corevisor itself, allowing it to reject invalid hostvisor memory accesses.
+The work also used HypSec to retrofit KVM ARM's NVHE mode, showing how the
+approach can support a widely used hypervisor while only incurring modest
+performance overhead.
 
 \section{SeKVM}
 \label{sec:sekvmintro}
