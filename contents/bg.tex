@@ -91,7 +91,7 @@ while keeping the option for the original split-mode virtualization, or Non-VHE
 
 \section{HypSec}
 
-HypSec is a new hypervisor design which uses microkernel principles to reduce
+HypSec \cite{hypsec} is a new hypervisor design which uses microkernel principles to reduce
 the trusted computing base of the hypervisor while protecting the
 confidentiality and integrity of VM data. It is motivated by the fact that as
 hypervisors become more complex, their ever-growing large codebases expose a
@@ -124,7 +124,7 @@ performance overhead.
 \section{SeKVM}
 \label{sec:sekvmintro}
 
-SeKVM extended the work of HypSec and presented a secure and formally verified
+SeKVM \cite{sekvm} extended the work of HypSec and presented a secure and formally verified
 Linux KVM hypervisor. While HypSec reduced the trusted computing base of the
 hypervisor, potential bugs in the TCB can still nullify the guarantee of VM
 data confidentiality and integrity. The work proposed \textit{microverification},
