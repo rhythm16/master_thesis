@@ -124,7 +124,21 @@ performance overhead.
 \section{SeKVM}
 \label{sec:sekvmintro}
 
-extended HypSec, formally verified the trusted TCB KCore
+SeKVM extended the work of HypSec and presented a secure and formally verified
+Linux KVM hypervisor. While HypSec reduced the trusted computing base of the
+hypervisor, potential bugs in the TCB can still nullify the guarantee of VM
+data confidentiality and integrity. The work proposed \textit{microverification},
+where a large codebase such as KVM ARM, is restructured into a small core and a
+set of untrusted services such that the security of the entire hypervisor can
+be proven by verifying the small core alone. SeKVM retrofitted KVM ARM's NVHE
+mode into the trusted \textit{KCore} and the set of untrusted services
+\textit{KServ}.
+To verify Kcore, \textit{security-preserving layers} are introduced to
+modularize the verification process.
+KCore's detailed C and assembly implementations are abstracted into higher-level
+specifications with the help of the Coq proof assistant, the specifications are
+then used to prove security properties that would be intractable to verify
+directly on the implementation.
 
 %Various previous work~\cite{lisosp21,zhang2011cloudvisor,zeyu20usenix,pkvm,fidelius-hpca18,sekvm}
 %redesigned the hypervisor to protect VMs.
