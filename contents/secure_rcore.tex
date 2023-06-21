@@ -71,9 +71,9 @@ before transferring ownership from a guest back to the host during VM terminatio
 Raw pointers are types in Rust that are not checked by Rust's aliasing xor
 mutability rule, meaning there can be multiple raw pointers pointing to the
 same piece of data. Further, raw pointers are also nullable. The relaxation of
-these safety rules opens up the potential for null pointer dereferences or
-use-after-free memory bugs when raw pointers are accessed. Hence, raw pointer
-accesses are prohibited in safe Rust.
+these safety rules opens up the potential for memory safety bugs including
+null pointer dereferences or use-after-free when raw pointers are accessed.
+Hence, raw pointer accesses are prohibited in safe Rust.
 As detailed in the upcoming paragraphs, we examine the need for raw pointers
 for accessing the four regions described in \autoref{sec:rcoreregions} and the
 measures taken to guarantee their isolation, even when employing unsafe Rust in
@@ -85,7 +85,7 @@ accesses is also deliberately made small ($\sim$50 LOC).
 Since there is no existing memory allocator in a hypervisor environment,
 we directly inform where in the address space \rustcore{} should use.
 Specifically, the address to the instance of \code{RcoreMetadata} is
-pre-defined, and the memory region is manually initialized at boot time,
+pre-defined, and the memory region is initialized at boot time,
 so it can be used safely thereby.
 Using that raw address, several functions are implemented that
 transform the raw pointer to \code{RcoreMetadata} into mutable references to
@@ -138,8 +138,9 @@ from \code{RCORE\-\_\-META\-DATA\-\_\-PTR} to
 as accesses to non-array fields will not go out of bounds,
 and Rust automatically adds runtime checks for the indices when array fields are accessed.
 We manually check this range is only accessible by \rustcore{} and disjoint
-from the page table pool and SMMU area by checking it is within the memory range unmapped from the
-host Linux kernel for \rustcore{} and comparing the addresses with the page table pool area and SMMU area.
+from the page table pool and SMMU area. The \rustcore{} metadata region is
+unmapped from the host Linux kernel, and we check its address to ensure that it
+does not overlap with the page table pool area or the SMMU area.
 Hence, it is impossible for \rustcore{} metadata accesses to access
 the other three regions accidentally.
 
