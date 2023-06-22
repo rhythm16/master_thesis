@@ -60,8 +60,10 @@ security of our hypervisor.
 As an example, forgetting to clear page table entries in the host's NPT
 makes way for a compromised host kernel to read the memory of a protected VM.
 We can add one more layer of defense by taking advantage of Rust
-auto-verification tools \cite{Verus, Prusti, Creusot, Flux} which base on
-Rust's strong type system, to check our code adheres to the specifications.
+auto-verification tools which base on Rust's strong type system
+\cite{Verus, Prusti, Creusot, Flux}. These tool allows developers to annotate
+Rust code with specifications, invariants and assertions and then verify them
+formally, mathematically proving that the code satisfies the specifications.
 
 This thesis demonstrated the ability of Rust to isolate memory regions by
 leveraging language features like automatic bound checks for array types, and
