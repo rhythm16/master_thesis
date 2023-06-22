@@ -244,8 +244,10 @@ can guarantee it is accessing NPT entries in the
 \subsection{Raw Pointer Access: SMMU}
 In a manner analogous to the generic area and page table pool, the type
 \code{SMMURegion} for accessing SMMU is created.
-\rustcore{} uses \code{SMMURegion} whenever it reads or writes SMMU registers.
 \code{SMMURegion}'s \code{new} method takes the MMIO address and
 verifies its inclusion within the SMMU region.
-By consistently utilizing this type for SMMU accesses, SMMU accesses are
-guaranteed to access the correct address region.
+\code{SMMURegion} is the only type that contain raw pointers pointing to the
+SMMU area, as other types' constructors reject addresses pointing to the SMMU
+area. Therefore, \rustcore{} must use \code{SMMURegion} whenever it reads or
+writes SMMU registers. By utilizing this type for SMMU accesses, SMMU accesses
+are guaranteed to access the correct address region.
