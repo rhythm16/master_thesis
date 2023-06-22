@@ -168,7 +168,7 @@ The only way to access the data wrapped in \code{\lock{}} is by calling the
 \code{lock} method of \code{\lock{}} reference.
 Different from Rust, C does not support methods for structs, it therefore lacks
 the ability to present an API that provides type-specific functionalities while
-abstracting away how the implementation manipulates the structure's data.
+hiding how the method's implementation manipulates the structure's data.
 For instance in \autoref{lst:typemethod}, users of \code{VMInfo} is forbidden
 from accessing the \code{vmid} field of \code{VMInfo} directly, but must call
 the \code{get\_vmid} method. The user thus can not arbitrarily modify data
