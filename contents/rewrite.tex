@@ -240,13 +240,19 @@ Our implementation is compatible with the Linux kernel codebase. For example,
 the page size definition is identical in \rustcore{} and KVM.
 For types shared between Linux and \rustcore{} like \code{kvm\_vcpu}, the type
 definitions are generated automatically with the tool
-\code{bindgen}~\cite{bindgen}. And for constants that are used by both Linux
+\code{bindgen}~\cite{bindgen}. \code{Bindgen} can generate Rust type
+definitions by parsing C's struct definitions, saving developers' time that
+would otherwise be spent defining the same type.
+For types that are shared by both C and Rust, the Rust attribute
+\code{\#[repr\-(C)]} is used to ensure their alignment, field layout order, and
+padding are the same in both languages, to prevent data corruption. This
+happens for example when the field layout of a structure is different for the
+two languages, resulting in C and Rust accessing distinct offsets within the
+structure when reading or writing to the same field.
+And for constants that are used by both Linux
 and \rustcore{}, including the page size mentioned above, they are copied from C
 to Rust manually. Due to the limited support of macro in \code{bindgen} and its
-complex usages by Linux, it is not used to generate constants.
-Regarding alignment, field layout order, and padding of custom types, the Rust
-attribute \code{\#[repr\-(C)]} is used. It ensures the data layout of the
-marked type has the same layout as in C.
+complex usages by Linux, \code{bindgen} is not used to generate constants.
 
 \textbf{Entry Point Binding.}
 Whenever an exception gets taken to EL2, the CPU switches its exception level
