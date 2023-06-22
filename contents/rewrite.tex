@@ -75,7 +75,8 @@ the rest of the Linux kernel.
 However, Linux 5.15, which is the latest long term support kernel version at
 the time of \rustsec{} development, does not support Rust as a development
 language. As a result, incorporating our Rust code into the kernel requires
-manual building and linking, which can be both laborious and susceptible to
+the developer to manually invoke the Rust compiler to build the Rust crate, and
+then link it against the kernel, which can be both laborious and susceptible to
 errors.
 To overcome this challenge, we integrated the Rust toolchain with the Linux
 kernel build system. A new subdirectory in Linux's source path
