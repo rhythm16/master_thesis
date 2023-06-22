@@ -125,7 +125,9 @@ reducing the risk of introducing bugs.
 %One major downside of this approach is that it is difficult to rewrite a single
 %function in a Rust-idiomatic and safe way.
 One major downside of this approach is the difficulty of rewriting individual
-functions in a manner that adheres to Rust's idiomatic practices.
+functions in a manner that adheres to Rust's idiomatic practices, such as using
+Rust's pattern-matching \code{match} syntax instead of the C-like \code{if}
+statements, and using references instead of raw pointers.
 Furthermore, it may result in a lot of \code{unsafe} blocks.
 These issues are solved by adding a second phase to the Rust rewrite;
 after the initial function by function rewrite, we removed unnecessary
