@@ -99,7 +99,7 @@ $(obj)/libkrustvm.a: $(src)/krustvm/src/*.rs
 \end{listing}
 to instruct \code{make} to use \code{cargo} to generate \code{libkrustvm.a}.
 }
-\item{link \code{libkrustvm.a} to generate object file \code{krustvm.o}}
+\item{convert \code{libkrustvm.a} into \code{krustvm.o} by calling \code{ld}}
 \end{enumerate}
 The Makefile in \code{arch/arm64/krustvm} generates \code{krustvm.o},
 and the kernel build system will then link this file with all other object
