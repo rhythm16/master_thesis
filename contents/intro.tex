@@ -22,9 +22,10 @@ system exploits. However, the security of the whole system still depends on the
 implementation of the small trusted TCB. Any vulnerability in the trusted TCB
 can void the guarantees of VM data confidentiality and integrity.
 While SeKVM~\cite{sekvm} extended the work of HypSec~\cite{hypsec} by formally
-verifying the smaller TCB, the approach is not scalable since all code
-modifications including the addition of new features, or code refactoring,
-requires a new proof.
+verifying the smaller TCB, the scalability of the approach is limited as formal
+proofs only validate specific implementations, and as the codebase evolves to
+incorporate new features or undergo code refactoring, the existing proof
+becomes outdated, necessitating a new proof for any code modifications.
 
 Rust is an emerging programming language that ensures strong memory safety
 guarantees at compile time while offering performance efficiency.
