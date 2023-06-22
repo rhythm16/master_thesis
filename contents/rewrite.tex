@@ -264,6 +264,10 @@ preassigned exception vector.
 We modify the exception vectors, which are written in assembly, to call
 \rustcore{}'s entry point functions instead of the original C handlers to
 transfer the control flow to our Rust code.
+\rustcore{}'s entry point functions must be annotated with the Rust attribute
+\code{\#[no\_mangle]}. This attribute informs the Rust compiler that the
+function name should not be mangled, in order for the linker to resolve the
+symbol reference in the exception vectors.
 %Rust functions in \rustcore{} are invoked in exception vectors.
 %This is the place where our Rust code in \rustcore{} comes into play.
 %The exception vectors are implemented in assembly, they call Rust
