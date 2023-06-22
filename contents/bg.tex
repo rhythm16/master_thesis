@@ -127,7 +127,9 @@ performance overhead.
 SeKVM \cite{sekvm} extended the work of HypSec and presented a secure and formally verified
 Linux KVM hypervisor. While HypSec reduced the trusted computing base of the
 hypervisor, potential bugs in the TCB can still nullify the guarantee of VM
-data confidentiality and integrity. The work proposed \textit{microverification},
+data confidentiality and integrity. SeKVM builds on the design of HypSec and
+further formally verified the hypervisor TCB. The work proposed
+\textit{microverification},
 where a large codebase such as KVM ARM, is restructured into a small core and a
 set of untrusted services such that the security of the entire hypervisor can
 be proven by verifying the small core alone. SeKVM retrofitted KVM ARM's NVHE
