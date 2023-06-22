@@ -254,9 +254,14 @@ Different from other memory-safe languages such as Python or Go, Rust does not
 employ garbage collection for managing memory. Instead, the concepts of
 lifetimes, ownership, and borrowing rules are introduced to mandate the
 programmer to follow specific rules.
-This paradigm of statically enforcing programming rules empowers Rust to
-perform comparably to C since Rust's compiler has complete control over the
-code that runs during runtime and can optimize it accordingly.
+Statically enforcing programming rules empowers Rust to perform comparably to
+C. The rules are checked at compile time, eliminating the need for runtime
+checks that incur overhead. Furthermore, these checks ensure adherence to the
+specified rules, and if no violations are found, the code is directly
+translated into machine instructions without any additional overhead or
+alteration in behavior.
+%Meaning the compiler can enforce memory safety of programs without performance penalties.
+%Rust's compiler has complete control over the code that runs during runtime and can optimize it accordingly.
 Additionally, Rust's safety rules ensure that no memory safety bugs will be
 present when satisfied, and the compiler automatically checks and prevents any
 violation of these rules.
