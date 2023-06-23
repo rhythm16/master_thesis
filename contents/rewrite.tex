@@ -361,9 +361,9 @@ calling \code{memblock\_reserve}, so that the kernel does not accidentally
 access this memory range (\autoref{fig:rcorereserved}). Malicious accesses to
 \rustcore{} private memory from the host kernel are prevented by unmapping the
 private memory from the host kernel's NPT.
-The global symbols previously defined the Linux kernel linker script have also
-been changed to macros that expand into addresses in the reserved range for
-\rustsec{}'s \rustcore{} usage.
+%The global symbols previously defined the Linux kernel linker script have also
+%been changed to macros that expand into addresses in the reserved range for
+%\rustsec{}'s \rustcore{} usage.
 
 \begin{figure}[H]
     \includegraphics[scale=0.60]{figures/rcore_reserved.pdf}
