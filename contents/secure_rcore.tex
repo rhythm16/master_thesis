@@ -54,6 +54,9 @@ approach assures \rustcore{} has exclusive access to the SMMU.
 
 \textbf{Generic Area.}
 The \textit{Generic Area} refers to memory outside the \rustcore{} area and the SMMU area.
+This area is used for host OS and guest VMs operation, initially all memory
+belongs to the host, and memory are allocated for the guest VMs by the host OS
+as the VMs get created and start to consume memory.
 \rustcore{} needs to access this area to modify memory pages
 belonging to the host or guests for VM services, such as zeroing a page
 before transferring ownership from a guest back to the host during VM termination.
