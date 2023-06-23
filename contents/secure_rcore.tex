@@ -20,6 +20,8 @@ table entry. If the address calculation is erroneous, the NPT walking code may
 dereference the pointer which points to an unrelated region of memory, and
 write to guest memory, or other hypervisor metadata, leading to crashes or
 vulnerabilities.
+Since \rustcore{} contain raw pointer accesses, which are not protected by
+Rust, pointers referring to unintended areas are also possible in our codebase.
 To tackle these kinds of bugs, \rustcore{}'s memory accesses are categorized
 into disjoint regions, and raw pointer accesses are guaranteed to not cross
 memory region boundaries. \autoref{sec:rcoreregions} describes each of the
