@@ -311,8 +311,9 @@ FFIs are used for calling longer assembly routines, below is a list showing the 
 \end{itemize}
 
 \textbf{KVM ARM Per-CPU Variables in Rust.}
-Using KVM ARM Per-CPU variables is special case for unsafe Rust.
-Mainline KVM has its EL2 per CPU variable mechanism; it is implemented by first
+Using KVM ARM Per-CPU variables is a special case for unsafe Rust.
+Mainline KVM has its EL2 per CPU variable mechanism (\autoref{fig:percpu});
+it is implemented by first
 allocating enough space for all cores to have a copy of the per CPU variables,
 then, for each CPU core, it records the offset from its copy of the variables to the
 base copy. This per-core offset is then stored in each core's \code{TPIDR\_EL2}
@@ -327,6 +328,12 @@ first from reading the address of the extern static variable, then reading
 \code{TPIDR\_EL2} via inline assembly, and lastly, another \code{unsafe} to
 dereference the calculated address. Concurrent accesses will not pose a problem
 since each core accesses a different address.
+
+\begin{figure}[hbtp]
+    \includegraphics[scale=0.60]{figures/percpu.pdf}
+    \caption{KVM ARM Per-CPU Variables Mechanism}
+    \label{fig:percpu}
+\end{figure}
 
 \section{Bringing up \rustsec{} on Real Hardware}
 
