@@ -24,7 +24,11 @@ Since \rustcore{} contain raw pointer accesses, which are not protected by
 Rust, pointers referring to unintended areas are also possible in our codebase.
 To tackle these kinds of bugs, \rustcore{}'s memory accesses are categorized
 into disjoint regions, and raw pointer accesses to a specific region are
-guaranteed to not access any of the other regions. \autoref{sec:rcoreregions}
+guaranteed to not access any of the other regions. With the memory region
+isolation, the NPT address miscalculation above will be eliminated, as raw
+pointers specified for NPT accesses will be guaranteed to not point to any
+other region.
+\autoref{sec:rcoreregions}
 describes each of the memory region defined for \rustcore{}'s memory accesses,
 and \autoref{sec:memiso} presents how raw pointers are guaranteed to access the
 intended region.
