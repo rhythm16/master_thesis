@@ -79,18 +79,23 @@ physical memory. Physical memory is divided into multiple disjoint regions,
 and the \rustcore{} implementation guarantees that all memory accesses done by
 \rustcore{} are located in the predefined regions, ensuring that bugs caused by
 pointers pointing to incorrect memory regions are prevented.
-This is done in two parts, for raw pointer accesses to the region which stores
-metadata used by \rustcore{}, called the \textit{\rustcore{} metadata region},
-these accesses are bound via a set of reference getter functions (RGF).
-Each RGF wraps a given Rcore’s raw pointer usage and returns a mutable
-reference to the associated shared metadata object after the caller acquires
-the corresponding lock. Because the raw pointer is turned into a mutable
-reference, the memory accessed is guaranteed to be bound by the size of the
-type being referenced, for arrays, the compiler automatically adds runtime
-checks that checks for out-of-bound array indices.
-For raw pointer accesses to the other regions, we built customized Rust types
-for each memory region that enforces bound-checking, and \rustcore{} accesses
-each memory region via the corresponding type.
+This involves transforming raw pointers into references, allowing Rust to
+automatically insert runtime checks for out-of-bound array indices, and
+building customized Rust types that enforce bound-checking for raw pointer
+accesses.
+%This is done in two parts, for raw pointer accesses to the region which stores
+%metadata used by \rustcore{}, called the \textit{\rustcore{} metadata region},
+%these accesses are bound via a set of reference getter functions (RGF).
+%Each RGF wraps a given Rcore’s raw pointer usage and returns a mutable
+%reference to the associated shared metadata object after the caller acquires
+%the corresponding lock. Because the raw pointer is turned into a mutable
+%reference, the memory accessed is guaranteed to be bound by the size of the
+%type being referenced, for arrays, the compiler automatically adds runtime
+%checks that checks for out-of-bound array indices.
+%For raw pointer accesses to the other regions, we built customized Rust types
+%for each memory region that enforces bound-checking, and \rustcore{} accesses
+%each memory region via the corresponding type.
+
 %This is achieved with customized Rust types for each memory region that
 %enforces bound-check to accesses, and mandating that \rustcore{} accesses a
 %memory region via each corresponding type.
