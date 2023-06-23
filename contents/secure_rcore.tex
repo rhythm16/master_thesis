@@ -23,10 +23,10 @@ vulnerabilities.
 Since \rustcore{} contain raw pointer accesses, which are not protected by
 Rust, pointers referring to unintended areas are also possible in our codebase.
 To tackle these kinds of bugs, \rustcore{}'s memory accesses are categorized
-into disjoint regions, and raw pointer accesses are guaranteed to not cross
-memory region boundaries. \autoref{sec:rcoreregions} describes each of the
-memory region defined for \rustcore{}'s memory accesses, and
-\autoref{sec:memiso} presents how raw pointers are guaranteed to access the
+into disjoint regions, and raw pointer accesses to a specific region are
+guaranteed to not access any of the other regions. \autoref{sec:rcoreregions}
+describes each of the memory region defined for \rustcore{}'s memory accesses,
+and \autoref{sec:memiso} presents how raw pointers are guaranteed to access the
 intended region.
 
 \section{\rustcore{} Memory Regions}
