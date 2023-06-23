@@ -42,7 +42,7 @@ and all other VMs, named \textit{\rustcore{} area}, to provide its functionality
 The \rustcore{} area comprises the \rustcore{} Metadata and the \rustcore{} Page Table Pool.
 The \rustcore{} Page Table Pool, as its name suggests, keeps private pools of physical pages
 for NPTs and SMMU page tables so that \rustcore{} has complete control
-over the permissions and the virtual-to-physical mappings of the memory
+over the permissions and the intermediate physical address to physical address mappings of the memory
 accessed by the host Linux kernel, VMs, and I/O devices. The \rustcore{} metadata,
 on the other hand, is used for storing \rustcore{} metadata described in
 \autoref{sec:RCO}.
