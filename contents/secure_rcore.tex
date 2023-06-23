@@ -13,8 +13,8 @@
 %guarantee raw pointers dont cross region boundaries
 %
 %Why do this?
-Numerous software bugs arise from the disparity between the address to which a
-pointer is pointing and the intended address it should be pointing to.
+Numerous software bugs arise from the disparity between the address a pointer
+points to and the intended address it should reference.
 For example, NPT walking code must calculate addresses of each level's page
 table entry. If the address calculation is erroneous, the NPT walking code may
 dereference the pointer which points to an unrelated region of memory, and
