@@ -302,9 +302,13 @@ assembly usages of \code{mrs} and \code{msr} are abstracted behind
 \code{aarch64-cpu}'s safe APIs.
 
 \textbf{FFI.}
-FFIs are used for calling longer assembly routines, such as the cache
-invalidation routine, and \code{\_\_guest\_enter} for context switching general
-purpose registers and entering guest VMs.
+FFIs are used for calling longer assembly routines, below is a list showing the FFI routines used in \rustcore{}.
+\begin{itemize}
+\item \code{\_\_guest\_enter}: context switching general purpose registers and entering guest VMs.
+\item \code{dcache\_clean\_inval}: invalidate cache of the input memory range.
+\item \code{acquire\_lock} and \code{release\_lock}: \rustcore{}'s spinlock primitive that spin on an address using an assembly loop.
+\item \code{tlb\_flush\_ipa}: flushes the input intermediate physical address range of the vmid given.
+\end{itemize}
 
 \textbf{KVM ARM Per-CPU Variables in Rust.}
 Using KVM ARM Per-CPU variables is special case for unsafe Rust.
