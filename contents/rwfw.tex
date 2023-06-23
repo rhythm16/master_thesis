@@ -68,8 +68,16 @@ formally, mathematically proving that the code satisfies the specifications.
 This thesis demonstrated how unsafe raw pointer accesses are protected through
 isolating memory regions,
 leveraging language features like automatic bound checks for array types, and
-type constructor that checks for their arguments. Furthermore, these features
-can be used even more extensively to achieve a more fine-grained memory region
+type constructor that checks for their arguments.
+Relying solely on memory region isolation is not enough to prevent bugs caused
+by raw pointers referencing incorrect addresses within the intended regions, as
+the checks only verify if the address falls within the correct region.
+Basically, the granularity of the protection is limited to the size of the
+memory regions. This limitation is similar to the hardware MMU, which cannot
+detect violations of sub-page access permissions because its protection
+granularity is at the page level.
+However, the chances of bugs occuring can be further decreased by using the
+previous features even more extensively to achieve a more fine-grained memory region
 isolation, such as separating the NPT pools into the first level NPT pool,
 second level NPT pool, and so on, or splitting the \rustcore{} metadata region
 into multiple isolated regions, such as \code{VMInfo} region, \code{PMemInfo}
