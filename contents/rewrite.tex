@@ -276,7 +276,11 @@ symbol reference in the exception vectors.
 \subsection{Unsafe Rust Usages}
 
 A small part of \rustcore{}'s implementation is coded in unsafe Rust.
-The source of unsafe Rust includes inline assembly, the Foreign Function
+Unsafe Rust exists because the underlying computer hardware is inherently
+unsafe. Certain tasks are impossible without unsafe operations, such as
+directly accessing a specific address to configure the interrupt controller, or
+issuing a memory barrier instruction in the middle of a function. Overall,
+the source of unsafe Rust includes inline assembly, the Foreign Function
 Interface (FFI), KVM ARM Per-CPU variables, and raw pointer accesses.
 The first three categories are discussed in this section,
 and for raw pointer usages, \autoref{sec:securercore} shows how each raw
