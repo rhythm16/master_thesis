@@ -317,8 +317,9 @@ allocating enough space for all cores to have a copy of the per CPU variables,
 then, for each CPU core, it records the offset from its copy of the variables to the
 base copy. This per-core offset is then stored in each core's \code{TPIDR\_EL2}
 system register. When there is a requirement to access a per CPU variable, the
-base address is first acquired by referencing a global variable, then adding
-\code{TPIDR\_EL2}'s value to the variable's address. \rustsec{} continues to use
+address of the base copy is first acquired, then \code{TPIDR\_EL2}'s value is
+added to the base copy's address to calculate the per-core address.
+\rustsec{} continues to use
 this mechanism by declaring the symbol which corresponds to the base address as
 a Rust extern static variable, take its raw address, then add the value in
 \code{TPIDR\_EL2} to it. This approach requires three \code{unsafe} statements,
