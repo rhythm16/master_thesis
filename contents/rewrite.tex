@@ -339,10 +339,13 @@ defining global symbols whose addresses reside right after the kernel image,
 in the Linux kernel linker script.
 \secore{} then references those symbols to access and utilize the reserved
 memory.
-However, there exists an unusable hole in Rpi-4B's physical memory address
-space, and the bootloader of Rpi-4B places the kernel image before the hole,
-resulting in an overlap of \secore{}'s private memory and the unusable hole
-(\autoref{fig:overlap}). This makes SeKVM unable to initialize on Rpi-4B.
+However, there is an unusable hole reserved for the GPU in the physical memory
+address space of Rpi-4B, spanning from 948MB to 1GB. The proprietary bootloader
+of Rpi-4B restricts the placement of the kernel image within the range of 0 to
+948MB. Considering that SeKVM requires more than 1GB of private memory, an
+overlap between \secore{}'s private memory and the unusable hole becomes
+unavoidable (\autoref{fig:overlap}). This makes SeKVM unable to initialize on
+Rpi-4B.
 
 \begin{figure}[hbtp]
     \includegraphics[scale=0.60]{figures/overlap.pdf}
