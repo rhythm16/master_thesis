@@ -358,7 +358,9 @@ script, we first locate a range of memory which does not overlap with the
 unusable hole of Rpi-4B and the kernel image, then add a new memblock that to
 correspond to the \rustcore{}'s private memory. We mark it as reserved by
 calling \code{memblock\_reserve}, so that the kernel does not accidentally
-access this memory range (\autoref{fig:rcorereserved}).
+access this memory range (\autoref{fig:rcorereserved}). Malicious accesses to
+\rustcore{} private memory from the host kernel are prevented by unmapping the
+private memory from the host kernel's NPT.
 The global symbols previously defined the Linux kernel linker script have also
 been changed to macros that expand into addresses in the reserved range for
 \rustsec{}'s \rustcore{} usage.
