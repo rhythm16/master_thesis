@@ -17,25 +17,46 @@ the Linux guest kernel to enable virtio.
 \code{rustc} version 1.68.0-nightly was used to compile \rustcore{},
 while clang 15.0.0 was used to compile the remaining components of
 \rustsec{}, SeKVM, and the mainline KVM.
-
 2 physical CPUs and 1 GB of RAM is configured for the bare
-metal setup. Each VM that equips with 2 virtual CPUs for the VM setup, and 1
-GB of RAM runs on the full hardware available.
+metal setup, and each VM is equipped with 2 virtual CPUs , and 1 GB of RAM.
 
-We ran the benchmarks listed in \autoref{tab:benchmark} in the VMs on both
-\rustsec{} and the mainline KVM. \autoref{fig:eval} shows the normalized
-results. We normalized the results to bare-metal performance. 1.00 refers
-to no virtualization overhead.
-A higher value means higher overhead. The performance on real application
+We ran the benchmarks listed in \autoref{tab:benchmark} in VMs on
+\rustsec{}, SeKVM, and the mainline KVM. \autoref{fig:eval} shows the normalized
+results. In \autoref{fig:eval} we normalized the results to bare-metal
+performance. 1.00 refers to no virtualization overhead, and
+a higher value means higher overhead. The performance on real application
 workloads show modest overhead overall for \rustsec{} compared to SeKVM and
-mainline KVM.
+mainline KVM. The overhead for \rustsec{} in most of the cases is less than
+10\% compared to mainline KVM.
 In the \code{TCP\_MAERTS} benchmark, all four experimental setups saturated the
-1GbE NIC on the Raspberry Pi 4 model B. Additionally, system noise had a more
-noticeable impact during the measurement of the bare-metal setup, making its
-performance the worst.
-Benchmarks ran in the three VM setups resulted in at most 20\% difference,
-we believe the differences are caused by various system noise factors e.g.
-caches, kernel thread wakeups, and dynamic voltage frequency scaling.
+1GbE NIC on the Raspberry Pi 4 model B. Additionally, experimental error had a
+more noticeable impact during the measurement of the bare-metal setup, making
+its performance the worst.
+For \rustsec{}, \code{TCP\_RR} and the YCSB-Redis benchmarks experienced higher
+overhead compared to mainline KVM at around 8\% and 14\%, respectively.
+\code{TCP\_RR} and YCSB-Redis are benchmarks that both send a lot of small
+packets, causing many VM exits. Hence, the bare-metal performance
+is roughly twice as good as the VMs, amplifying the difference between mainline
+KVM and \rustsec{} when plotting \autoref{fig:eval}.
+%In fact, if the overhead are plotted by normalizing against the
+%performance of mainline KVM (\autoref{fig:eval2}), all benchmarks run on
+%\rustsec{} experience an overhead less than 10\% compared to mainline KVM.
+In fact, when the overhead is normalized against the performance of the
+mainline KVM (\autoref{fig:eval2}), all benchmarks executed on \rustsec{}
+demonstrate an overhead of less than 10\% in comparison.
+\rustsec{} performs nearly as well as mainline KVM in
+CPU bound benchmarks and bulk data network performance benchmarks
+(\code{TCP\_MAERTS}, \code{TCP\_STREAM}) since
+the workloads require minimal to no VM exits.
+The discrepancy arises in \code{TCP\_RR}, Apache, Memcached,
+and YCSB-Redis, which involve a higher number of VM exits due to their frequent
+small network transmissions. Both SeKVM and \rustsec{} execute additional logic
+in EL2 to ensure VM data confidentiality and integrity, resulting in increased
+overhead in VM exits compared to mainline KVM.
+%The worst overhead for \rustsec{} compared to mainline KVM occurs for the
+%YCSB-Redis benchmark at around 14\%.
+%Various system noise factors e.g. caches, kernel thread wakeups, and dynamic
+%voltage frequency scaling might also come into play.
 
 \begin{table}
 \centering
@@ -68,3 +89,8 @@ caches, kernel thread wakeups, and dynamic voltage frequency scaling.
     \label{fig:eval}
 \end{figure}
 
+\begin{figure}[hbtp]
+    \includegraphics[scale=0.45]{figures/eval2.pdf}
+    \caption{Application Benchmark Performance 2}
+    \label{fig:eval2}
+\end{figure}
