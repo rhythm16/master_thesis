@@ -8,13 +8,20 @@ is rewritten from the C-based SeKVM.
 Similar to SeKVM, \rustsec{} delivers VM confidentiality and integrity
 protection against an untrusted Linux host kernel integrated with KVM.
 We overcame challenges that surfaced during the C-to-Rust rewrite. We
-integrated Rust into the Linux codebase, brought up \rustsec{} on Rpi-4B by
-changing the method used for reserving memory, and rewritten the SeKVM's TCB in
-Rust. Moreover, raw pointer accessses are segregated into a small amount of
-unsafe code to allow most hypervisor functionalities to be implemented in safe
-Rust. We also leverage Rust's compile-time checks to eliminate memory safety
-bugs of the TCB. Rust's type system is used to enforce memory region isolation
-via custom types.
-\rustsec{} preserves the performance efficiency of KVM, demonstrating the
-practicality for deployments.
+integrated Rust into the Linux codebase, rewritten SeKVM's TCB in Rust, and
+brought up \rustsec{} on Rpi-4B by changing the method used for reserving
+memory.
+Furthermore, unsafe raw pointer accesses are protected by memory region
+isolation, which leveraged Rust's compile-time checks and its strong type
+system.
+These measures, combined with Rust's high-performance nature, enable \rustsec{}
+to ensure robust memory safety, accomodate flexible code modifications, and
+maintain overall efficiency.
+In our experiments, \rustsec{} preserves the performance efficiency of KVM,
+demonstrating the practicality for deployments.
+%Raw pointer accessses are segregated into a small amount of
+%unsafe code to allow most hypervisor functionalities to be implemented in safe
+%Rust, and memory region isolation is enforced by transforming raw pointers
+%into references and custom types that check for bounds.
+%Rust's type system is used to enforce memory region isolation.
 
