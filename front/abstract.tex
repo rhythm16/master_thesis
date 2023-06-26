@@ -15,7 +15,9 @@ An attacker that exploits vulnerabilities in the privileged hypervisor
 codebase can gain unfettered access to VM data, compromising their safety.
 Previous attempts to retrofit hypervisors into small trusted cores have
 limitations, as the security still relies on the implementation of the trusted
-core. Recently, Rust adoption has been increasing for its strong memory safety
+core. Moreover, formal verification on the TCB necessitates significant human
+effort and is not easily applicable to rapidly evolving codebases.
+Recently, Rust adoption has been increasing for its strong memory safety
 guarantees and performance efficiency. Leveraging Rust, our work focuses on
 rewriting SeKVM, a secure Linux KVM hypervisor, into \rustsec{}, the first
 Rust-based secure Linux/KVM hypervisor. \rustsec{} incorporates
