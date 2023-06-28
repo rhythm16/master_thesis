@@ -18,17 +18,28 @@ limitations, as the security still relies on the implementation of the trusted
 core. Moreover, formal verification on the TCB necessitates significant human
 effort and is not easily applicable to rapidly evolving codebases.
 Recently, Rust adoption has been increasing for its strong memory safety
-guarantees and performance efficiency. Leveraging Rust, our work focuses on
-rewriting SeKVM, a secure Linux KVM hypervisor, into \rustsec{}, the first
-Rust-based secure Linux/KVM hypervisor. \rustsec{} incorporates
-\rustcore{}, a small trusted core written in Rust to protect VM confidentiality
-and integrity.
-We addressed challenges in incorporating a Rust TCB into Linux, rewriting SeKVM's
-C-based TCB in Rust, and bringing up \rustsec{} on real hardware. In addition,
-we minimized unsafe Rust usage, enclosed unsafe code within safe abstractions,
-and utilized Rust's type system to ensure the memory safety of unsafe
-operations in \rustcore{}.
-\rustsec{} suggests a modest overhead compared to mainline KVM and SeKVM, and
+guarantees and performance efficiency.
+This thesis explores leveraging Rust to build a secure commodity hypervisor.
+We focus on rewriting SeKVM into KrustVM.
+In \rustsec{}, a small trusted core written in Rust is incorporated to replace
+the C-based core of SeKVM, which serves to protect VM confidentiality and
+integrity.
+%\rustsec{} incorporates
+%\rustcore{}, a small trusted core written in Rust to protect VM confidentiality
+%and integrity.
+We adopt a modular design to secure the trusted Rust core. We separated and
+minimized the unsafe Rust code from safe Rust by enclosing unsafe code within
+safe abstractions, and utilized Rust's type system to ensure the memory safety
+of the unsafe memory accesses done by the trusted Rust core.
+%[Then you focus on briefly disuss what you actually do -- enclosed unsafe code etc.]
+In addition,
+we addressed challenges in linking a Rust TCB into Linux, rewriting SeKVM's
+C-based TCB in Rust, and bringing up \rustsec{} on real hardware.
+%In addition,
+%we minimized unsafe Rust usage, enclosed unsafe code within safe abstractions,
+%and utilized Rust's type system to ensure the memory safety of unsafe
+%operations in \rustcore{}.
+\rustsec{} incurs modest overhead compared to mainline KVM and SeKVM, and
 demonstrates the practicality of securing existing hypervisors through a
 C-to-Rust rewrite.
 

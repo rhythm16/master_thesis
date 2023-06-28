@@ -47,7 +47,7 @@ There has been recent adoption of Rust in the mainline Linux kernel. However,
 instead of replacing the existing Linux kernel code written in C with Rust,
 the current efforts were limited to developing new Rust-based device drivers.
 
-Our work implements a Linux KVM's TCB in Rust, so that the resulting hypervisor
+Our work explores implementing a Linux KVM's TCB in Rust, so that the resulting hypervisor
 benefits from the strong safety guarantees that Rust provides.
 %Our work leverages the Rust programming language and rewrite SeKVM \cite{sekvm},
 %a secure Linux KVM hypervisor in Rust, so that the resulting hypervisor
@@ -56,15 +56,22 @@ A Rust-based TCB eliminates the need for repeated verification each time the
 code is changed, since the compiler automatically guarantees memory safety each
 time the code is compiled, allowing for a flexible codebase while maintaining
 a secure implementation.
-We build upon the work of SeKVM \cite{sekvm} and forward ported SeKVM
-from Linux 4.18 to Linux 5.15, to take advantage of new kernel features
-including Link-Time-Optimization (LTO) and energy-aware scheduling. SeKVM's
-verified TCB \textit{\secore{}} is then rewritten in Rust, which is called
-\textit{\rustcore{}}.
-The resulting hypervisor, \rustsec{}, incorporates the small Rust TCB
-\rustcore{} to
+We have developed \rustsec{}, a Rust-based reimplementation of SeKVM \cite{sekvm}.
+\rustsec{} is implemented mainly by rewriting SeKVM's verified TCB
+\textit{\secore{}} in Rust, which is called \textit{\rustcore{}}.
+\rustsec{} incorporates the small Rust TCB \rustcore{} to
 protect VM confidentiality and integrity against the large and untrusted
 hypervisor codebase that encompasses KVM’s host Linux kernel.
+We build upon the work of SeKVM \cite{sekvm} and forward ported SeKVM
+from Linux 4.18 to Linux 5.15, to take advantage of new kernel features
+including Link-Time-Optimization (LTO) and energy-aware scheduling.
+%SeKVM's
+%verified TCB \textit{\secore{}} is then rewritten in Rust, which is called
+%\textit{\rustcore{}}.
+%The resulting hypervisor, \rustsec{}, incorporates the small Rust TCB
+%\rustcore{} to
+%protect VM confidentiality and integrity against the large and untrusted
+%hypervisor codebase that encompasses KVM’s host Linux kernel.
 We identified and overcame the challenges that arose when trying to
 incorporate a Rust TCB inside Linux, rewrite SeKVM's TCB in Rust, and bring up
 \rustsec{} on real hardware.
