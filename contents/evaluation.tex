@@ -26,33 +26,37 @@ results. In \autoref{fig:eval} we normalized the results to bare-metal
 performance. 1.00 refers to no virtualization overhead, and
 a higher value means higher overhead. The performance on real application
 workloads show modest overhead overall for \rustsec{} compared to SeKVM and
-mainline KVM. The overhead for \rustsec{} in most of the cases is less than
-10\% compared to mainline KVM.
-In the \code{TCP\_MAERTS} benchmark, all four experimental setups saturated the
-1GbE NIC on the Raspberry Pi 4 model B. Additionally, experimental error had a
-more noticeable impact during the measurement of the bare-metal setup, making
-its performance the worst.
-For \rustsec{}, \code{TCP\_RR} and the YCSB-Redis benchmarks experienced higher
-overhead compared to mainline KVM at around 8\% and 14\%, respectively.
-\code{TCP\_RR} and YCSB-Redis are benchmarks that both send a lot of small
-packets, causing many VM exits. Hence, the bare-metal performance
-is roughly twice as good as the VMs, amplifying the difference between mainline
+mainline KVM.
+
+In the \code{TCP\_MAERTS} benchmark, it can be observed that mainline KVM,
+SeKVM, and \rustsec{} all outperformed the bare-metal setup. This is caused by
+the four experimental setups saturating the 1GbE NIC on the Raspberry Pi 4
+model B. Additionally, experimental error had a more noticeable impact during
+the measurement of the bare-metal setup, making its performance the worst.
+
+For \code{TCP\_RR} and the YCSB-Redis benchmarks, \rustsec{} experienced higher
+overhead difference compared to mainline KVM at around 8\% and 14\%,
+respectively.
+Performance of the bare-metal setup of these two benchmarks
+are roughly twice as good as the VMs, amplifying the difference between mainline
 KVM and \rustsec{} when plotting \autoref{fig:eval}.
 %In fact, if the overhead are plotted by normalizing against the
 %performance of mainline KVM (\autoref{fig:eval2}), all benchmarks run on
 %\rustsec{} experience an overhead less than 10\% compared to mainline KVM.
-In fact, when the overhead is normalized against the performance of the
+In fact, when the performance is normalized against
 mainline KVM (\autoref{fig:eval2}), all benchmarks executed on \rustsec{}
-demonstrate an overhead of less than 10\% in comparison.
-\rustsec{} performs nearly as well as mainline KVM in
-CPU bound benchmarks and bulk data network performance benchmarks
-(\code{TCP\_MAERTS}, \code{TCP\_STREAM}) since
-the workloads require minimal to no VM exits.
-The discrepancy arises in \code{TCP\_RR}, Apache, Memcached,
-and YCSB-Redis, which involve a higher number of VM exits due to their frequent
-small network transmissions. Both SeKVM and \rustsec{} execute additional logic
-in EL2 to ensure VM data confidentiality and integrity, resulting in increased
-overhead in VM exits compared to mainline KVM.
+demonstrate an overhead of less than 10\% compared to mainline KVM.
+
+%\rustsec{} performs nearly as well as mainline KVM in
+%CPU bound benchmarks and bulk data network performance benchmarks
+%(\code{TCP\_MAERTS}, \code{TCP\_STREAM}) since
+%the workloads require minimal to no VM exits.
+%The discrepancy arises in \code{TCP\_RR}, Apache, Memcached,
+%and YCSB-Redis, which involve a higher number of VM exits due to their frequent
+%small network transmissions. Both SeKVM and \rustsec{} execute additional logic
+%in EL2 to ensure VM data confidentiality and integrity, resulting in increased
+%overhead in VM exits compared to mainline KVM.
+
 %The worst overhead for \rustsec{} compared to mainline KVM occurs for the
 %YCSB-Redis benchmark at around 14\%.
 %Various system noise factors e.g. caches, kernel thread wakeups, and dynamic
