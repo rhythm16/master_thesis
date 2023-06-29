@@ -69,20 +69,34 @@ This thesis demonstrated how unsafe raw pointer accesses are protected through
 isolating memory regions,
 leveraging language features like automatic bound checks for array types, and
 type constructor that checks for their arguments.
-Relying solely on memory region isolation is not enough to prevent bugs caused
-by erroneous raw pointers.
+One aspect of this approach is that
+relying solely on memory region isolation is not enough to prevent bugs caused
+by raw pointers pointing to unintended addresses.
 Erroneous raw pointers are not detectable by memory region isolation if they
-reference an incorrect addresses within the corrent region.
+reference an incorrect addresses within the correct region.
 Basically, the granularity of the protection is limited to the size of the
 memory regions. This limitation is similar to the hardware MMU, which cannot
 detect violations of sub-page access permissions because its protection
 granularity is at the page level.
-However, the chances of bugs occuring can be further decreased by using the
-previous features even more extensively to achieve a more fine-grained memory region
-isolation, such as separating the NPT pools into the first level NPT pool,
+
+In spite of the fact that memory region isolation alone can not guarantee the
+absence of raw pointers pointing to unintended addresses,
+a possible way of enhancing the protection given by memory region isolation is
+to shrink the sizes of the memory regions. The smaller granularity can increase
+the chances of detecting a raw pointer pointing to an unintended address.
+This can be done by by using the
+previously mentioned features even more extensively to enforce a separation of
+memory regions that are smaller in size,
+such as separating the NPT pools into the first level NPT pool,
 second level NPT pool, and so on, or splitting the \rustcore{} metadata region
 into multiple isolated regions, such as \code{VMInfo} region, \code{PMemInfo}
 region, etc.
+%However, the chances of bugs occuring can be further decreased by using the
+%previous features even more extensively to achieve a more fine-grained memory region
+%isolation, such as separating the NPT pools into the first level NPT pool,
+%second level NPT pool, and so on, or splitting the \rustcore{} metadata region
+%into multiple isolated regions, such as \code{VMInfo} region, \code{PMemInfo}
+%region, etc.
 %In addition, the lifetime feature of Rust remains unexplored in our work.
 %In contrast to the spatial protection achieved through memory region isolation,
 %there are opportunities to utilize lifetimes to enforce temporal safety
