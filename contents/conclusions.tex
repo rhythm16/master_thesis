@@ -3,15 +3,14 @@
 \chapter{Conclusions}
 \label{sec:conclusions}
 
-We have presented \rustsec{}, the first Rust-based secure KVM hypervisor that
-is rewritten from the C-based SeKVM.
+We have presented \rustsec{}, a Rust-based secure KVM hypervisor that
+is based on Linux 5.15 and rewritten from the C-based Linux 4.18 SeKVM.
 Similar to SeKVM, \rustsec{} delivers VM confidentiality and integrity
 protection against an untrusted Linux host kernel integrated with KVM.
-We overcame challenges that surfaced during the C-to-Rust rewrite. We
-integrated Rust into the Linux codebase, rewritten SeKVM's TCB in Rust, and
-brought up \rustsec{} on Rpi-4B by changing the method used for reserving
-memory.
-Furthermore, unsafe raw pointer accesses are protected by memory region
+We overcame challenges in forward porting SeKVM to Linux 5.15, and rewriting
+SeKVM's TCB in Rust.
+Furthermore, unsafe raw pointer accesses in \rustsec{}'s TCB \rustcore{}
+are protected by memory region
 isolation, which leveraged Rust's compile-time checks and its strong type
 system.
 These measures, combined with Rust's high-performance nature, enable \rustsec{}
