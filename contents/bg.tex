@@ -70,7 +70,7 @@ hypervisor to split its execution across CPU modes and be integrated into the
 Linux kernel. Split-mode virtualization installs a small amount of code in EL2
 called the \textit{lowvisor} when Linux initializes. The lowvisor is only
 responsible for hypervisor tasks that can only be done in the more privileged
-EL2, including running EL2 exception vectors and installing the addresses NPTs
+EL2, including running EL2 exception vectors and installing the base addresses of NPTs
 in the \code{VTTBR\_EL2} register, which holds the NPT root pointer. Split-mode
 virtualization has various advantages. Kernel features including memory
 allocation, CPU scheduling can still be done in EL1, thus simplifying the

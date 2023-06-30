@@ -50,7 +50,7 @@ more self-contained. Symbols belonging to EL2 are isolated from kernel mode
 symbols name-wise, a prefix \code{\_\_kvm\_nvhe\_} is prepended to all symbols
 in EL2.
 Parts of SeKVM that references symbols in the original NVHE KVM EL2 code then
-must adjust how it references those symbols, the predefined helper macro
+must adjust how it references those symbols. The predefined helper macro
 \code{CHOOSE\_NVHE\_SYM()} is used, it prepends the prefix (\code{\_\_kvm\_nvhe\_})
 for referencing NVHE symbols so that it is not required to write
 \code{\_\_kvm\_nvhe\_} every time the code references a NVHE symbol. This makes
@@ -313,7 +313,7 @@ FFIs are used for calling longer assembly routines, below is a list showing the 
 
 \textbf{KVM ARM Per-CPU Variables in Rust.}
 Using KVM ARM Per-CPU variables is a special case for unsafe Rust.
-Mainline KVM has its EL2 per CPU variable mechanism (\autoref{fig:percpu});
+Mainline KVM has its own EL2 per CPU variable mechanism (\autoref{fig:percpu});
 it is implemented by first
 allocating enough space for all cores to have a copy of the per CPU variables,
 then, for each CPU core, it records the offset from its copy of the variables to the

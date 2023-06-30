@@ -146,8 +146,9 @@ from \code{RCORE\-\_\-META\-DATA\-\_\-PTR} to
 \code{RCORE\-\_\-META\-DATA\-\_\-PTR + size\-of\-(Rcore\-Metadata)},
 as accesses to non-array fields will not go out of bounds,
 and Rust automatically adds runtime checks for the indices when array fields are accessed.
-We manually check this range is only accessible by \rustcore{} and disjoint
-from the page table pool and SMMU area. The \rustcore{} metadata region is
+%We manually check this range is only accessible by \rustcore{} and disjoint
+%from the page table pool and SMMU area. The \rustcore{} metadata region is
+The \rustcore{} metadata region is
 unmapped from the host Linux kernel, and we check its address to ensure that it
 does not overlap with the page table pool area or the SMMU area.
 Hence, it is impossible for \rustcore{} metadata accesses to access
