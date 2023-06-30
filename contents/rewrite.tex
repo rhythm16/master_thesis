@@ -10,15 +10,16 @@
 %Our Rust-based hypervisor, \rustsec{}, follows the design described in
 %\autoref{sec:sekvmintro}, and is based upon the SeKVM implementation.
 
-The goal of this work is to create a secure hypervisor by leveraging Rust's
-safety features in its TCB.
-Our Rust-based hypervisor, \rustsec{}, is based upon the SeKVM implementation.
-We first forward ported SeKVM from its original Linux 4.18 version to the
+%The goal of this work is to create a secure hypervisor by leveraging Rust's
+%safety features in its TCB.
+%Our Rust-based hypervisor, \rustsec{}, is based upon the SeKVM implementation.
+In the process of developing \rustsec{},
+we first forward ported SeKVM from its original Linux 4.18 version to the
 newest long term support version Linux 5.15 at the time of development.
 Once the forward port of SeKVM to Linux 5.15 is done, we then rewrote the SeKVM
 TCB \secore{} in Rust to create \rustcore{}, \rustsec{}'s TCB. This chapter
-describes the challenges that arose when implementing a Rust-based KVM TCB, and
-the techniques employed to solve them.
+describes the challenges that arose when implementing a Rust-based KVM TCB for
+Linux 5.15, and the techniques employed to solve them.
 
 \section{Forward Porting SeKVM from Linux 4.18 to Linux 5.15}
 The Linux kernel gained many new features between version 4.18 and 5.15,
