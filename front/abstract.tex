@@ -19,14 +19,20 @@ core. Moreover, formal verification on the TCB necessitates significant human
 effort and is not easily applicable to rapidly evolving codebases.
 Recently, Rust adoption has been increasing for its strong memory safety
 guarantees and performance efficiency.
-This thesis explores leveraging Rust to build a secure commodity hypervisor.
-We focus on rewriting SeKVM into KrustVM.
+This thesis addresses challenges in rewriting and porting the C-based KVM TCB
+in SeKVM to Rust for a recent Linux long term support version. This allows the
+resulting hypervisor, \rustsec{}, to not only benefit from recent Linux
+advancements, but also be protected by Rust's safety guarantees.
+Furthermore, the Rust-based implementation can be conveniently updated,
+as Rust conducts safety checks at compile-time automatically.
+%This thesis explores leveraging Rust to build a secure commodity hypervisor.
+%We focus on rewriting SeKVM into KrustVM.
 In \rustsec{}, a small trusted core written in Rust is incorporated to replace
 the C-based core of SeKVM, which serves to protect VM confidentiality and
 integrity.
-During the implementation of \rustsec{},
-we addressed challenges in linking a Rust TCB into Linux, rewriting SeKVM's
-C-based TCB in Rust, and bringing up \rustsec{} on real hardware.
+%During the implementation of \rustsec{},
+%we addressed challenges in linking a Rust TCB into Linux, rewriting SeKVM's
+%C-based TCB in Rust, and bringing up \rustsec{} on real hardware.
 %\rustsec{} incorporates
 %\rustcore{}, a small trusted core written in Rust to protect VM confidentiality
 %and integrity.
