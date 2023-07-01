@@ -88,7 +88,7 @@ and compiled into a single static library \code{libkrustvm.a}.
 To support building \code{libkrustvm.a} and linking it with the
 rest of the kernel with \code{make}, the following is added to the Makefile:
 \begin{enumerate}
-\item{append \code{libkrustvm.a} to Kbuild built-in object goals \code{obj-y} by adding the line \code{obj-y += libsekvmrs.a}}
+\item{append \code{libkrustvm.a} to Kbuild built-in object goals \code{obj-y} by adding the line \code{obj-y += libkrustvm.a}}
 \item{define Makefile target
 \begin{listing}[hbtp]
     \begin{minted}{Makefile}
