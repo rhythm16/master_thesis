@@ -100,7 +100,8 @@ Using that raw address, several functions are implemented that
 transform the raw pointer to \code{RcoreMetadata} into mutable references to
 each of its fields and return them to the caller.
 
-A set of reference getter functions (RGFs) is implemented. \rustcore{}
+We leverage the design proposed in \cite{krustvmrepo} and implemented
+a set of reference getter functions (RGFs). \rustcore{}
 can use the RGFs to safely access \code{RcoreMetadata} with safe Rust.
 %We enable the \funcl{} layer to safely access \code{RcoreMetadata}, without any
 %unsafe Rust by implementing a set of reference getter functions (RGFs) that

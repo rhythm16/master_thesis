@@ -160,7 +160,10 @@ Another module aggregates the \rustcore{} metadata structures into a single big
 structure \code{RcoreMetadata} (line 1 in \autoref{lst:rcoremetadata}) to simplify
 the memory used by these metadata.
 Some fields in \code{RcoreMetadata} are shared by all CPU cores, while others are per CPU.
-Fields shared by all CPU cores in \code{RcoreMetadata} are defined as type \code{\lock{}<T>}
+We leverage the custom mutex type \code{\lock{}} from \cite{krustvmrepo} to
+protect concurrent accesses to
+fields shared by all CPU cores in \code{RcoreMetadata}.
+Shared fields are defined as type \code{\lock{}<T>}
 (an example is line 3 in \autoref{lst:rcoremetadata}),
 where \code{T} is the type that actually stores \rustcore{} metadata.
 \rustcore{}'s custom \code{\lock{}} is a generic type which can hold any
