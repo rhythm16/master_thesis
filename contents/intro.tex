@@ -52,10 +52,9 @@ the current efforts were limited to developing new Rust-based device drivers.
 %Our work leverages the Rust programming language and rewrite SeKVM \cite{sekvm},
 %a secure Linux KVM hypervisor in Rust, so that the resulting hypervisor
 %benefits from the strong safety guarantees that Rust automatically provides.
-We have developed \rustsec{} for Linux 5.15, a Rust-based reimplementation of
-the Linux 4.18-based SeKVM \cite{sekvm}.
-\rustsec{} is implemented mainly by rewriting SeKVM's verified TCB
-\textit{\secore{}} in Rust, which is called \textit{\rustcore{}}.
+We have developed \rustsec{} for Linux 5.15, a Rust-based secure Linux KVM hypervisor.
+\rustsec{} reimplemented SeKVM \cite{sekvm} and replaced SeKVM's verified TCB
+with a Rust-based TCB, called \rustcore{}.
 % KRUSTVM DESCRIPTION
 \rustsec{} incorporates the small Rust TCB \rustcore{} to
 protect VM confidentiality and integrity against the large and untrusted
@@ -67,8 +66,10 @@ Its Rust-based TCB also eliminates the need for repeated verification each time 
 code is changed, since the compiler automatically guarantees memory safety each
 time the code is compiled, allowing for a flexible codebase while maintaining
 a secure implementation.
-Moreover, updating the Linux version enables us to take advantage of new kernel
-features including Link-Time-Optimization (LTO) and energy-aware scheduling.
+We ported the Linux 4.18-based SeKVM to Linux 5.15, a recent version of
+long-term-support Linux, for \rustsec{}. This allows us to take advantage of
+new kernel features, including Link-Time-Optimization (LTO) and energy-aware
+scheduling.
 % RUST BASED ADVANTAGES END
 % CHALLENGES
 During the development of \rustsec{}, we identified and overcame challenges
