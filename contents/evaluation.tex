@@ -13,7 +13,7 @@ Cortex-A72 (ARM v8) 64-bit SoC at 1.5GHz, 4GB of RAM, and a 1 GbE NIC device.
 QEMU v4.0.0 was used to start the virtual machines on Ubuntu 20.04. The guest
 kernels also used Linux 5.15, and all kernels tested employed the same 
 configuration. We requested the authors of~\cite{hypsec} and got a patch for
-the Linux guest kernel to enable virtio.
+the Linux guest kernel to enable Virtio.
 \code{rustc} version 1.68.0-nightly was used to compile \rustcore{},
 while clang 15.0.0 was used to compile the remaining components of
 \rustsec{}, SeKVM, and mainline KVM.
@@ -30,9 +30,15 @@ mainline KVM.
 
 In the \code{TCP\_MAERTS} benchmark, it can be observed that mainline KVM,
 SeKVM, and \rustsec{} all outperformed the bare-metal setup. This is caused by
-the four experimental setups saturating the 1GbE NIC on the Raspberry Pi 4
-model B. Additionally, experimental error had a more noticeable impact during
-the measurement of the bare-metal setup, making its performance the worst.
+the Virtio driver batching multiple packet sends before submitting data to the
+NIC. In contrast, the bare-metal driver submits data to the NIC for each
+individual transmission, leading to a higher overhead in communicating with
+the NIC.
+\code{TCP\_STREAM}, which measures bulk data receive performance, does not
+demonstrate the advantages of packet batching because receiving packets causes
+additional VM exits as the hypervisor injects virtual interrupts to notify the
+VM of incoming packets. The overhead caused by these extra VM exits dwarfs the
+benefits provided by packet batching.
 
 For \code{TCP\_RR} and the YCSB-Redis benchmarks, \rustsec{} experienced higher
 overhead difference compared to mainline KVM at around 8\% and 14\%,
