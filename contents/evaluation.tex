@@ -46,6 +46,22 @@ KVM and \rustsec{} when plotting \autoref{fig:eval}.
 In fact, when the performance is normalized against
 mainline KVM (\autoref{fig:eval2}), all benchmarks executed on \rustsec{}
 demonstrate an overhead of less than 10\% compared to mainline KVM.
+This shows that \rustsec{} is only slightly less performant than mainline KVM.
+
+The overhead difference of \rustsec{} and mainline KVM is more significant in
+the networking benchmarks (i.e. Netperf, Apache, Memchached, YCSB-Redis).
+The rationale for this can be illustrated by comparing how network data is
+exchanged between the guest and the host.
+We configured a Virtio network device for VMs. For mainline KVM, the memory
+buffers in the Virtio rings are shared between the host kernel and VMs, such
+that the network device can DMA data directly into a guest-visible buffer.
+In contrast, \rustsec{} does not allow the host kernel to share memory with VMs
+by default. However, to support Virtio, \rustsec{} provides the
+\code{GRANT\_MEM} and \code{REVOKE\_MEM} hypercalls which can be explicitly
+called by the guest kernel to share memory with the host kernel.
+Therefore, \rustsec{} VMs must invoke additional hypercalls while running
+network workloads, inducing extra overhead. SeKVM also uses the same set of
+hypercalls for the network workloads, thus incurring the same type of overhead.
 
 %\rustsec{} performs nearly as well as mainline KVM in
 %CPU bound benchmarks and bulk data network performance benchmarks
