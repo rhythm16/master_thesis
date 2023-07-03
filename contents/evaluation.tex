@@ -32,8 +32,7 @@ In the \code{TCP\_MAERTS} benchmark, it can be observed that mainline KVM,
 SeKVM, and \rustsec{} all outperformed the bare-metal setup. This is caused by
 the Virtio driver batching multiple packet sends before submitting data to the
 NIC. In contrast, the bare-metal driver submits data to the NIC for each
-individual transmission, leading to a higher overhead in communicating with
-the NIC.
+individual transmission, leading to a higher overhead.
 \code{TCP\_STREAM}, which measures bulk data receive performance, does not
 demonstrate the advantages of packet batching because receiving packets causes
 additional VM exits as the hypervisor injects virtual interrupts to notify the
