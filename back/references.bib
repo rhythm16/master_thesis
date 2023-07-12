@@ -824,3 +824,20 @@ doi = {10.1145/1807128.1807152}
   year={2023},
 }
 
+@inproceedings{sel4,
+author = {Klein, Gerwin and Elphinstone, Kevin and Heiser, Gernot and Andronick, June and Cock, David and Derrin, Philip and Elkaduwe, Dhammika and Engelhardt, Kai and Kolanski, Rafal and Norrish, Michael and Sewell, Thomas and Tuch, Harvey and Winwood, Simon},
+title = {SeL4: Formal Verification of an OS Kernel},
+year = {2009},
+isbn = {9781605587523},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1629575.1629596},
+doi = {10.1145/1629575.1629596},
+abstract = {Complete formal verification is the only known way to guarantee that a system is free of programming errors.We present our experience in performing the formal, machine-checked verification of the seL4 microkernel from an abstract specification down to its C implementation. We assume correctness of compiler, assembly code, and hardware, and we used a unique design approach that fuses formal and operating systems techniques. To our knowledge, this is the first formal proof of functional correctness of a complete, general-purpose operating-system kernel. Functional correctness means here that the implementation always strictly follows our high-level abstract specification of kernel behaviour. This encompasses traditional design and implementation safety properties such as the kernel will never crash, and it will never perform an unsafe operation. It also proves much more: we can predict precisely how the kernel will behave in every possible situation.seL4, a third-generation microkernel of L4 provenance, comprises 8,700 lines of C code and 600 lines of assembler. Its performance is comparable to other high-performance L4 kernels.},
+booktitle = {Proceedings of the ACM SIGOPS 22nd Symposium on Operating Systems Principles},
+pages = {207–220},
+numpages = {14},
+keywords = {sel4, microkernel, l4, isabelle/hol},
+location = {Big Sky, Montana, USA},
+series = {SOSP '09}
+}
