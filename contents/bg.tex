@@ -117,7 +117,11 @@ to which the host and VMs have no access. Since VM and corevisor memory is
 unmapped from the host NPT, a compromised hostvisor that accesses these memory
 pages causes an NPT fault that traps to the corevisor. NPT faults are routed to
 the corevisor itself, allowing it to reject invalid hostvisor memory accesses.
-The work also used HypSec to retrofit KVM ARM's NVHE mode, showing how the
+The work also used HypSec to retrofit KVM ARM's NVHE mode.
+NVHE mode is chosen over VHE mode for the retrofit, as VHE mode runs both the
+host kernel and KVM entirely in EL2, which prevents the corevisor from
+restricting the host kernel's full hardware access.
+The NVHE retrofit shows how the
 approach can support a widely used hypervisor while only incurring modest
 performance overhead.
 
