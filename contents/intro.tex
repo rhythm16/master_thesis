@@ -36,8 +36,12 @@ dereferences are eliminated by distinguishing between nullable and non
 nullable types, nullable types are not allowed by default, array out-of-bound
 accesses are prevented by runtime checks that are added by the compiler, and
 Rust's ownership system prevents dangling pointers.
-Further, similar to programming languages like C, Rust allows developers to
-directly manage low-level systems resources such as memory. Due to these
+Further, Rust allows developers to
+sacrafice the memory safety guarantees for stronger control over the program,
+for example to directly manage low-level systems resources such as memory.
+These low-level operations requires the \code{unsafe} keyword which marks a
+region of code for which the compiler does not guarantee memory safety.
+Due to these
 attributes, various previous work has adopted Rust to implement systems
 software with critical security and performance requirements, including
 operating systems~\cite{NrOS, Redleaf, TockOS, theseus},
@@ -62,10 +66,10 @@ hypervisor codebase that encompasses KVM’s host Linux kernel.
 % KRUSTVM DESCRIPTION END
 % RUST BASED ADVANTAGES
 \rustsec{} benefits from the strong safety guarantees that Rust provides.
-Its Rust-based TCB also eliminates the need for repeated verification each time the
-code is changed, since the compiler automatically guarantees memory safety each
-time the code is compiled, allowing for a flexible codebase while maintaining
-a secure implementation.
+Its Rust-based TCB also allows for a flexible codebase while maintaining a
+relatively secure implementation, since the compiler automatically checks the
+safety rules each time the code is compiled.
+
 We ported the Linux 4.18-based SeKVM to Linux 5.15, a recent version of
 long-term-support Linux, for \rustsec{}. This allows us to take advantage of
 new kernel features, including Link-Time-Optimization (LTO) and energy-aware
@@ -134,10 +138,10 @@ accesses.
 % describe the benefits
 %We spent less than one person year rewriting SeKVM into \rustsec{}.
 By rewriting a C-based hypervisor to a Rust-based implementation,
-the responsibility of human auditing is shifted to the compiler.
+most of the responsibility of human auditing is shifted to the compiler.
 By enforcing Rust's safety rules, the compiler ensures that memory bugs are
-prevented, alleviating the need for developers to manually audit for such
-issues or perform formal verification.
+prevented, except for places where unsafe Rust is used. Hence alleviating the
+need for developers to manually audit the entire program.
 This results in safer code and a more straightforward development process.
 Performance evaluation of \rustsec{} on real Arm64 hardware shows that
 \rustsec{} incurs modest performance overhead to application workloads
