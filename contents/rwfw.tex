@@ -69,17 +69,15 @@ effort and reduced flexibility for making changes.
 Although we hope that Rust can help us with reducing the effort needed to secure
 software without sacraficing the ability to update the codebase easily,
 it is challenging to solely rely on Rust to provide safety guarantees
-comparable to formal verification. Rust does not model hardware features
+comparable to formal verification.
+Firstly, \rustsec{}'s TCB \rustcore{} is not guaranteed to be memory safe, as
+there are still portions of unsafe Rust code within Rcore that the compiler
+cannot ensure memory safety for.
+Moreover, Rust does not model hardware features
 such as memory translation done by the Memory Management Unit (MMU), and
 exception levels. Consequently, when building software on top of these features,
 the compiler cannot check for misconfiguration or logical errors.
-Moreover, \rustsec{}'s TCB \rustcore{} is not guaranteed to be memory safe either,
-as there are still portions of unsafe Rust code
-within Rcore that the compiler cannot ensure memory safety for.
-
-Aside from memory safety, formal verification can also guarantee correctness in
-terms of functionality.
-In contrast, Rust alone cannot guarantee functional correctness. While Rust
+While Rust
 autoverification tools introduced in \autoref{sec:fw} may offer some assistance
 in this regard, it is clear that they do not match the level of assurance
 offered by formal verification.
