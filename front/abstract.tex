@@ -23,21 +23,28 @@ This thesis addresses challenges in rewriting and porting the C-based KVM TCB
 in SeKVM to Rust for a recent Linux long term support version. This allows the
 resulting hypervisor, \rustsec{}, to not only benefit from recent Linux
 advancements, but also be protected by Rust's safety guarantees.
+Rust's memory safety guarantees only applies for safe Rust, as some safety
+rules are not enforced for unsafe Rust. However, this approach still provides
+benefits as the developer only need to audit the parts of the codebase that are
+implemented in unsafe Rust, effectively reducing the amount of code that
+requires manual review for memory safety bugs.
 Furthermore, the Rust-based implementation can be conveniently updated,
-as Rust conducts safety checks at compile-time automatically.
+as Rust conducts safety checks for safe Rust automatically.
 %This thesis explores leveraging Rust to build a secure commodity hypervisor.
 %We focus on rewriting SeKVM into KrustVM.
-In \rustsec{}, a small trusted core written in Rust is incorporated to replace
-the C-based core of SeKVM, which serves to protect VM confidentiality and
-integrity.
+% SMALL CORE DESCRIPTION
+%In \rustsec{}, a small trusted core written in Rust is incorporated to replace
+%the C-based core of SeKVM, which serves to protect VM confidentiality and
+%integrity.
+% SMALL CORE DESCRIPTION END
 %During the implementation of \rustsec{},
 %we addressed challenges in linking a Rust TCB into Linux, rewriting SeKVM's
 %C-based TCB in Rust, and bringing up \rustsec{} on real hardware.
 %\rustsec{} incorporates
 %\rustcore{}, a small trusted core written in Rust to protect VM confidentiality
 %and integrity.
-In addition,
-a modular design is adopted to secure the trusted Rust core. We separated and
+To enhance the safety of the unsafe code in \rustsec{},
+a modular design is adopted for the trusted Rust core. We separated and
 minimized the unsafe Rust code from safe Rust by enclosing unsafe code within
 safe abstractions, and utilized Rust's type system to ensure the memory safety
 of the unsafe memory accesses done by the trusted Rust core.
