@@ -140,9 +140,9 @@ accesses.
 By rewriting a C-based hypervisor to a Rust-based implementation,
 most of the responsibility of human auditing is shifted to the compiler.
 By enforcing Rust's safety rules, the compiler ensures that memory bugs are
-prevented, except for places where unsafe Rust is used. Hence alleviating the
-need for developers to manually audit the entire program.
-This results in safer code and a more straightforward development process.
+prevented, except for places where unsafe Rust is used.
+This allows developers to focus their manual auditing efforts solely on the
+portions where unsafe Rust is utilized, rather than the entire program.
 Performance evaluation of \rustsec{} on real Arm64 hardware shows that
 \rustsec{} incurs modest performance overhead to application workloads
 compared to mainline KVM and SeKVM. We demonstrate the practicality of
