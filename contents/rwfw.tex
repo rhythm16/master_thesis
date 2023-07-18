@@ -62,6 +62,10 @@ the assembly code in the kernel are also verified, and the CompCertX verified
 compiler is used for compilation, these combined make the mC2 kernel certified
 down to the assembly level. Overall the proof effort for certifing the mC2
 kernel is 2 person years, and it consists of 6500 lines of C and x86 assembly.
+Additionally, SeKVM \cite{sekvm} presented a secure and formally verified Linux
+KVM hypervisor. Different from the seL4 and CertiKOS, which both verified
+less commonly used kernels, SeKVM verified the commodity Linux KVM hypervisor,
+which is widely deployed commercially.
 
 These formally verified software systems are guaranteed to be free of
 programming errors, but achieving this comes at the cost of significant human
