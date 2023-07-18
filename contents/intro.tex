@@ -66,9 +66,8 @@ hypervisor codebase that encompasses KVM’s host Linux kernel.
 % KRUSTVM DESCRIPTION END
 % RUST BASED ADVANTAGES
 \rustsec{} benefits from the strong safety guarantees that Rust provides.
-Its Rust-based TCB also allows for frequent code updates while maintaining a
-relatively secure implementation, since the compiler automatically checks the
-safety rules for safe Rust.
+Its Rust-based TCB also allows for frequent code updates  , since the compiler
+automatically checks the safety rules for safe Rust.
 This ensures that our implementation of \rustsec{} is free from memory bugs
 such as null pointer dereference, use-after-free, except for places where
 unsafe Rust is used.
