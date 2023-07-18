@@ -77,14 +77,24 @@ comparable to formal verification.
 Firstly, \rustsec{}'s TCB \rustcore{} is not guaranteed to be memory safe, as
 there are still portions of unsafe Rust code within Rcore that the compiler
 cannot ensure memory safety for.
+Nevertheless, if we assume the correctness of the safety checks in our memory
+region isolation, we can guarantee that \rustcore{} will access the intended
+region whenever a raw pointer is accessed.
+As for the rest of the unsafe Rust usages, e.g. inline assembly, foreign
+function calls, or raw pointer usages within the intended regions, the memory
+safety of \rustcore{} still relies on the correctness of their respective
+implementations.
 Moreover, Rust does not model hardware features
 such as memory translation done by the Memory Management Unit (MMU), and
 exception levels. Consequently, when building software on top of these features,
-the compiler cannot check for misconfiguration or logical errors.
+the compiler cannot check for hardware misconfiguration, such as setting the
+wrong permission bits for a NPT entry. Further, software bugs that are not
+related to memory such as forgetting to clear a page's contents before changing
+the ownership of the page are not prevented by Rust as well.
 While Rust
 autoverification tools introduced in \autoref{sec:fw} may offer some assistance
-in this regard, it is clear that they do not match the level of assurance
-offered by formal verification.
+regarding these logical errors, it is clear that they do not match the level of
+assurance offered by formal verification.
 Nonetheless, conducting extensive testing may be a viable option to gain
 confidence in ensuring the correct behavior of \rustcore{}.
 
