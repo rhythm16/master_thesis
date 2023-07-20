@@ -754,47 +754,54 @@
 %
 \newcommand{\makeverification}{
   \clearpage
-  \phantomsection
-  \ntu@setgeometry{\ntu@geometry@main}
+%  \phantomsection
+%  \ntu@setgeometry{\ntu@geometry@main}
   \pagenumbering{roman}
   \addcontentsline{toc}{chapter}{\ntu@verificationletter}
-  \begin{singlespace}
-    %  口委審定書標題 (24, 36) (26, 39)
-    %  論文題目 (20, 30)
-    \begin{center}
-      \fontsize{24}{36}\selectfont
-      {\ntu@university}{\ntu@degree}學位{\ntu@type}\par
-      \fontsize{26}{39}\selectfont
-      口試委員會審定書\par
-      \vfill
-      \fontsize{20}{30}\selectfont
-      {\ntu@title}\par
-      {\ntu@title@en}\par
-    \end{center}
+  \includepdf[pages=-]{figures/defense.pdf}
 
-    % 口委審定書內容 (16, 24)
-    \vfill
-    \fontsize{16}{24}\selectfont
-    \Eindent
-    本論文係{\ntu@author}君（\ntu@ID）在{\ntu@university}{\ntu@institute}完成之{\ntu@degree}學位{\ntu@type}，於民國{\ntu@format@date{\ntu@date@zh@digit}{\ntu@oraldate}}承下列考試委員審查通過及口試及格，特此證明\par
-  \end{singlespace}
+%\begin{figure}[h]
+%    \centering
+%    \includegraphics[scale=0.9]{figures/defense.pdf}
+%\end{figure}
 
-  \begin{doublespace}
-    % 口委簽名表格 (16, 24)
-    \begin{center}
-      \vfill
-      \fontsize{16}{24}\selectfont
-      \begin{tabularx}{\textwidth}{Xl}
-        {\hfill}口試委員：{\hfill}& \rule{11.5cm}{1pt}      \\
-          & \multicolumn{1}{c}{（指導教授）}                \\
-          & \rule{5cm}{1pt}\hspace{1.5cm}\rule{5cm}{1pt}  \\
-          & \rule{5cm}{1pt}\hspace{1.5cm}\rule{5cm}{1pt}  \\
-          & \rule{5cm}{1pt}\hspace{1.5cm}\rule{5cm}{1pt}  \\
-          & \rule{5cm}{1pt}\hspace{1.5cm}\rule{5cm}{1pt}  \\
-        所{\hfill}長：{\hfill}& \rule{9cm}{1pt}
-      \end{tabularx}
-    \end{center}
-  \end{doublespace}
+%  \begin{singlespace}
+%    %  口委審定書標題 (24, 36) (26, 39)
+%    %  論文題目 (20, 30)
+%    \begin{center}
+%      \fontsize{24}{36}\selectfont
+%      {\ntu@university}{\ntu@degree}學位{\ntu@type}\par
+%      \fontsize{26}{39}\selectfont
+%      口試委員會審定書\par
+%      \vfill
+%      \fontsize{20}{30}\selectfont
+%      {\ntu@title}\par
+%      {\ntu@title@en}\par
+%    \end{center}
+%
+%    % 口委審定書內容 (16, 24)
+%    \vfill
+%    \fontsize{16}{24}\selectfont
+%    \Eindent
+%    本論文係{\ntu@author}君（\ntu@ID）在{\ntu@university}{\ntu@institute}完成之{\ntu@degree}學位{\ntu@type}，於民國{\ntu@format@date{\ntu@date@zh@digit}{\ntu@oraldate}}承下列考試委員審查通過及口試及格，特此證明\par
+%  \end{singlespace}
+%
+%  \begin{doublespace}
+%    % 口委簽名表格 (16, 24)
+%    \begin{center}
+%      \vfill
+%      \fontsize{16}{24}\selectfont
+%      \begin{tabularx}{\textwidth}{Xl}
+%        {\hfill}口試委員：{\hfill}& \rule{11.5cm}{1pt}      \\
+%          & \multicolumn{1}{c}{（指導教授）}                \\
+%          & \rule{5cm}{1pt}\hspace{1.5cm}\rule{5cm}{1pt}  \\
+%          & \rule{5cm}{1pt}\hspace{1.5cm}\rule{5cm}{1pt}  \\
+%          & \rule{5cm}{1pt}\hspace{1.5cm}\rule{5cm}{1pt}  \\
+%          & \rule{5cm}{1pt}\hspace{1.5cm}\rule{5cm}{1pt}  \\
+%        所{\hfill}長：{\hfill}& \rule{9cm}{1pt}
+%      \end{tabularx}
+%    \end{center}
+%  \end{doublespace}
 
   % 恢復預設板型
   \restoregeometry
