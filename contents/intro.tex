@@ -15,15 +15,15 @@ integrates an entire Linux OS kernel inside its TCB. Attackers that
 successfully exploit hypervisor vulnerabilities may gain the ability
 to steal or modify secret VM data.
 
-Previous work HypSec~\cite{hypsec} has retrofitted commodity hypervisors into a
+Previously HypSec~\cite{hypsec} has retrofitted commodity hypervisors into a
 small trusted core that enforces resource access control to ensure the
 confidentiality and integrity of VM data against hypervisor and host operating
 system exploits. However, the security of the whole system still depends on the
 implementation of the small trusted TCB. Any vulnerability in the trusted TCB
 can void the guarantees of VM data confidentiality and integrity.
-While SeKVM~\cite{sekvm} extended the work of HypSec~\cite{hypsec} by formally
-verifying the smaller TCB, the scalability of the approach is limited as formal
-proofs only validate specific implementations, and as the codebase evolves to
+SeKVM~\cite{sekvm} extended the work of HypSec~\cite{hypsec} by formally
+verifying the smaller TCB and requires significant efforts. Previous systems
+only verified a specific implementation, and as the codebase evolves to
 incorporate new features or undergo code refactoring, the existing proof
 becomes outdated, necessitating a new proof for any code modifications.
 
@@ -107,7 +107,7 @@ Unsafe code are enclosed within a safe abstraction and a safe API is exposed
 in order to implement complex functionalities in safe Rust, including CPU,
 memory, VM boot protection, VM exit, and hypercall handlers.
 Further, raw pointer accesses, which are unsafe in Rust, are protected using
-Rust’s type system. In \rustcore{}, raw pointers are used for accessing
+Rust's type system. In \rustcore{}, raw pointers are used for accessing
 physical memory. Physical memory is divided into multiple disjoint regions,
 and the \rustcore{} implementation guarantees that all memory accesses done by
 \rustcore{} are located in the predefined regions, ensuring that bugs caused by
