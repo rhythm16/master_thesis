@@ -58,13 +58,20 @@ the current efforts were limited to developing new Rust-based device drivers.
 %benefits from the strong safety guarantees that Rust automatically provides.
 % KRUSTVM DESCRIPTION
 We have developed \rustsec{} for Linux 5.15, a Rust-based secure Linux KVM hypervisor.
+By using Rust, we leverage Rust's automatic safety checks, and most of the
+responsibility of human auditing is shifted to the compiler. The manual
+auditing efforts can be focused solely on the portions where unsafe Rust is
+utilized, rather than the entire program.
 We first ported the Linux 4.18-based SeKVM to Linux 5.15, a recent version of long-term-support Linux.
 Then SeKVM's verified TCB is reimplemented with a Rust-based TCB, called \rustcore{}.
 The kernel version update allows us to take advantage of new kernel features, including Link-Time-Optimization (LTO) and energy-aware scheduling.
-And the Rust TCB reimplementation benefits from the strong safety guarantees that Rust provides.
+%And the Rust TCB reimplementation benefits from the strong safety guarantees that Rust provides.
 Similar to SeKVM, \rustsec{} incorporates the small Rust TCB \rustcore{} to
 protect VM confidentiality and integrity against the large and untrusted
-hypervisor codebase that encompasses KVM’s host Linux kernel.
+hypervisor codebase that encompasses KVM's host Linux kernel.
+Performance evaluation of \rustsec{} on real Arm64 hardware shows that
+\rustsec{} incurs modest performance overhead to application workloads
+compared to mainline KVM and SeKVM.
 % KRUSTVM DESCRIPTION END
 
 % CHALLENGES
@@ -142,17 +149,18 @@ small amount of unsafe code, and raw pointer usages are safe-guarded.
 %This ensures that our implementation of \rustsec{} is free from memory bugs
 %such as null pointer dereference, use-after-free, except for places where
 %unsafe Rust is used.
-By rewriting a C-based hypervisor to a Rust-based implementation,
-most of the responsibility of human auditing is shifted to the compiler.
-The manual auditing efforts can be focused solely on the
-portions where unsafe Rust is utilized, rather than the entire program.
-Its Rust-based TCB also allows for frequent code updates, since the compiler
-automatically checks the safety rules for safe Rust.
+
+%By rewriting a C-based hypervisor to a Rust-based implementation,
+%most of the responsibility of human auditing is shifted to the compiler.
+%The manual auditing efforts can be focused solely on the
+%portions where unsafe Rust is utilized, rather than the entire program.
+%Its Rust-based TCB also allows for frequent code updates, since the compiler
+%automatically checks the safety rules for safe Rust.
 % RUST BASED ADVANTAGES END
-Performance evaluation of \rustsec{} on real Arm64 hardware shows that
-\rustsec{} incurs modest performance overhead to application workloads
-compared to mainline KVM and SeKVM. We demonstrate the practicality of
-securing an existing commodity hypervisor by a C-to-Rust rewrite.
+%Performance evaluation of \rustsec{} on real Arm64 hardware shows that
+%\rustsec{} incurs modest performance overhead to application workloads
+%compared to mainline KVM and SeKVM. We demonstrate the practicality of
+%securing an existing commodity hypervisor by a C-to-Rust rewrite.
 
 The rest of the thesis will be organized as follows. Background
 will be reviewed in \autoref{sec:bg}. Our threat model and assumptions are
