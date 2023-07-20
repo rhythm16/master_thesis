@@ -62,10 +62,22 @@ the assembly code in the kernel are also verified, and the CompCertX verified
 compiler is used for compilation, these combined make the mC2 kernel certified
 down to the assembly level. Overall the proof effort for certifing the mC2
 kernel is 2 person years, and it consists of 6500 lines of C and x86 assembly.
-Additionally, SeKVM \cite{sekvm} presented a secure and formally verified Linux
-KVM hypervisor. Different from the seL4 and CertiKOS, which both verified
-less commonly used kernels, SeKVM verified the commodity Linux KVM hypervisor,
-which is widely deployed commercially.
+SeKVM \cite{sekvm} presented a secure and formally verified Linux KVM
+hypervisor. Different from seL4 and CertiKOS, which both verified less commonly
+used kernels, SeKVM verified the commodity Linux KVM hypervisor, which is
+widely deployed commercially. To achieve this, KVM is retrofitted into a small
+trusted core \secore{} and the remaining untrusted services Kserv, and
+\secore{} is proved to guarantee VM confidentiality and integrity.
+All of these work verified their code implementation by writing proofs to show
+that the code refines, or satisfies the specifications given. The
+specifications captures all the bahavior of the implementation.
+However, the high level specifications themselves may be potentially insecure.
+To mitigate this issue, SeKVM takes a step further and proves \secore{}'s
+specification upholds VM confidentiality and integrity by showing there can not
+exist any information leakage between VMs and Kserv, regardless of how they
+interact with \secore{}'s interface. In other words, the specifications of
+\secore{} are guaranteed to exhibit the desired security properties. On the
+other hand, seL4 and CertiKOS does not address this issue.
 
 These formally verified software systems are guaranteed to be free of
 programming errors, but achieving this comes at the cost of significant human
@@ -95,6 +107,14 @@ While Rust
 autoverification tools introduced in \autoref{sec:fw} may offer some assistance
 regarding these logical errors, it is clear that they do not match the level of
 assurance offered by formal verification.
+Autoverification tools are not able to explore all possible program paths and
+states comprehensively, as they can only guarantee that individual parts of the
+implementation satisfy certain low-level specifications. For instance, a
+sorting function may successfully sort an input vector. This limitation makes
+autoverification tools unable to holistically prove the entire codebase
+conforms to higher-level security properties. In contrast, formal verification
+considers all possible system states and inputs, providing a higher level of
+confidence in the system's correctness.
 Nonetheless, conducting extensive testing may be a viable option to gain
 confidence in ensuring the correct behavior of \rustcore{}.
 
