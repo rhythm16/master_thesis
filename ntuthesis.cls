@@ -692,7 +692,7 @@
 %   #1 DOI Code                 數位識別碼
 %
 \newcommand{\insertdoi}[1]{
-  \AddToShipoutPicture{
+  \AddToShipoutPictureFG{
     \AtPageUpperLeft{
       \fboxrule=0pt\fboxsep=0pt\framebox[\paperwidth][r]{
       \raisebox{-\paperheight}{
