@@ -104,14 +104,14 @@ wrong permission bits for a NPT entry. Further, software bugs that are not
 related to memory such as forgetting to clear a page's contents before changing
 the ownership of the page are not prevented by Rust as well.
 While Rust
-autoverification tools introduced in \autoref{sec:fw} may offer some assistance
+verification tools introduced in \autoref{sec:fw} may offer some assistance
 regarding these logical errors, it is clear that they do not match the level of
 assurance offered by formal verification.
 Autoverification tools are not able to explore all possible program paths and
 states comprehensively, as they can only guarantee that individual parts of the
 implementation satisfy certain low-level specifications. For instance, a
 sorting function may successfully sort an input vector. This limitation makes
-autoverification tools unable to holistically prove the entire codebase
+verification tools unable to holistically prove the entire codebase
 conforms to higher-level security properties. In contrast, formal verification
 considers all possible system states and inputs, providing a higher level of
 confidence in the system's correctness.
@@ -130,7 +130,7 @@ security of our hypervisor.
 As an example, forgetting to clear page table entries in the host's NPT
 makes way for a compromised host kernel to read the memory of a protected VM.
 We can add one more layer of defense by taking advantage of Rust
-auto-verification tools which base on Rust's strong type system
+verification tools which base on Rust's strong type system
 \cite{Verus, Prusti, Creusot, Flux}. These tool allows developers to annotate
 Rust code with specifications, invariants and assertions and then verify them
 formally, mathematically proving that the code satisfies the specifications.
