@@ -896,8 +896,8 @@
 % Acknowledgement Environment
 %
 \newenvironment{acknowledgement}{
-  \chapter*{\centering \ntu@acknowledgement}
-  \addcontentsline{toc}{chapter}{\ntu@acknowledgement}
+  \chapter*{\centering \ntu@acknowledgement@zh}
+  \addcontentsline{toc}{chapter}{\ntu@acknowledgement@zh}
   \fontsize{12}{18}\selectfont
 }
 
