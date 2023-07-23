@@ -758,12 +758,12 @@
 %  \ntu@setgeometry{\ntu@geometry@main}
   \pagenumbering{roman}
   \addcontentsline{toc}{chapter}{\ntu@verificationletter}
-  \includepdf[pages=-]{figures/defense.pdf}
+%  \includepdf[pages=-]{figures/defense.pdf}
 
-%\begin{figure}[h]
-%    \centering
-%    \includegraphics[scale=0.9]{figures/defense.pdf}
-%\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/defense.pdf}
+\end{figure}
 
 %  \begin{singlespace}
 %    %  口委審定書標題 (24, 36) (26, 39)
