@@ -11,7 +11,7 @@ Cloudvisor \cite{zhang2011cloudvisor, zeyu20usenix} introduced a tiny security
 monitor underneath the commodity hypervisor to protect the hosted VMs.
 Twinvisor \cite{lisosp21} supports regular VMs and confidential VMs by running
 hypervisors within both of ARM TrustZone's normal world and secure world.
-HypSec and pkvm \cite{hypsec, pkvm} reduced the hypervisor's resource access
+HypSec \cite{hypsec} and pkvm \cite{pkvm} reduced the hypervisor's resource access
 control component into to a small core to reduce the attack surface.
 Unlike our work, none of them used Rust to secure their hypervisor
 implementation.
@@ -66,7 +66,7 @@ SeKVM \cite{sekvm} presented a secure and formally verified Linux KVM
 hypervisor. Different from seL4 and CertiKOS, which both verified less commonly
 used kernels, SeKVM verified the commodity Linux KVM hypervisor, which is
 widely deployed commercially. To achieve this, KVM is retrofitted into a small
-trusted core \secore{} and the remaining untrusted services Kserv, and
+trusted core \secore{} and the remaining untrusted services KServ, and
 \secore{} is proved to guarantee VM confidentiality and integrity.
 All of these work verified their code implementation by writing proofs to show
 that the code refines, or satisfies the specifications given. The
@@ -74,7 +74,7 @@ specifications captures all the bahavior of the implementation.
 However, the high level specifications themselves may be potentially insecure.
 To mitigate this issue, SeKVM takes a step further and proves \secore{}'s
 specification upholds VM confidentiality and integrity by showing there can not
-exist any information leakage between VMs and Kserv, regardless of how they
+exist any information leakage between VMs and KServ, regardless of how they
 interact with \secore{}'s interface. In other words, the specifications of
 \secore{} are guaranteed to exhibit the desired security properties. On the
 other hand, seL4 and CertiKOS does not address this issue.

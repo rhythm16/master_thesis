@@ -134,9 +134,9 @@ further formally verified the hypervisor TCB. The work proposed
 where a large codebase such as KVM ARM, is restructured into a small core and a
 set of untrusted services such that the security of the entire hypervisor can
 be proven by verifying the small core alone. SeKVM retrofitted KVM ARM's NVHE
-mode into the trusted \textit{KCore} and the set of untrusted services
+mode into the trusted \textit{\secore{}} and the set of untrusted services
 \textit{KServ}.
-To verify Kcore, \textit{security-preserving layers} are introduced to
+To verify \secore{}, \textit{security-preserving layers} are introduced to
 modularize the verification process.
 KCore's detailed C and assembly implementations are abstracted into higher-level
 specifications with the help of the Coq proof assistant, the specifications are
@@ -253,7 +253,7 @@ It enables programs to be memory-safe without requiring programmers to manually
 manage memory as in traditional languages (e.g. C/C++).
 Different from other memory-safe languages such as Python or Go, Rust does not
 employ garbage collection for managing memory. Instead, the concepts of
-lifetimes, ownership, and borrowing rules are introduced to mandate the
+lifetimes, ownership, and borrowing are introduced to mandate the
 programmer to follow specific rules.
 Statically enforcing programming rules empowers Rust to perform comparably to
 C. The rules are checked at compile time, eliminating the need for runtime
@@ -306,9 +306,9 @@ Ownership lacks the flexibility of argument passing.
 Rust addresses this by \textit{borrowing},
 a mechanism that allows accessing data without gaining ownership.
 A variable can borrow ownership from another variable to acquire a
-\textit{reference} to the data. References can be divided into two categories,\textit{shared}
-references and \textit{exclusive} references. The reference can only be read
-and not modified with a shared reference. Nevertheless, multiple shared
+\textit{reference} to the data. References can be divided into two categories, \textit{shared}
+references and \textit{exclusive} references. Shared references can only be read
+and not modified. Nevertheless, multiple shared
 references for a specific value can be held simultaneously.
 On the other hand, exclusive references allow reading from and modifying the
 value. However, having any other kind of reference active simultaneously for
@@ -366,7 +366,7 @@ vulnerabilities.
 While most low-level code is written in unsafe code, Rust introduces
 the concept of \textit{interior unsafe}~\cite{ruststudy}. A function is considered
 interior unsafe if it exposes a safe interface but contains unsafe blocks
-in implementation. This allows unsafe operations to be encapsulated
+in its implementation. This allows unsafe operations to be encapsulated
 into safe abstractions. For instance, in
 \autoref{lst:interiorunsafe}, Rust's \code{replace} function can be
 called by safe Rust, but it is implemented using unsafe raw pointer operations.
@@ -397,7 +397,7 @@ pub const fn replace<T>(dest: &mut T, src: T) -> T {
 This leads to a design practice that interior unsafe functions should provide
 the necessary checks that prevent the unsafe code from producing any undefined
 behavior or memory safety bugs.
-The callee in the safe world hence bears no responsibility to ensure safety.
+The caller in the safe world hence bears no responsibility to ensure safety.
 
 \textbf{Interior Mutability.}
 Mutating referenced data via an immutable reference is forbidden in Rust.

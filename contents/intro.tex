@@ -15,7 +15,7 @@ integrates an entire Linux OS kernel inside its TCB. Attackers that
 successfully exploit hypervisor vulnerabilities may gain the ability
 to steal or modify secret VM data.
 
-Previously HypSec~\cite{hypsec} has retrofitted commodity hypervisors into a
+Previously, HypSec~\cite{hypsec} has retrofitted commodity hypervisors into a
 small trusted core that enforces resource access control to ensure the
 confidentiality and integrity of VM data against hypervisor and host operating
 system exploits. However, the security of the whole system still depends on the
@@ -35,7 +35,7 @@ Rust prevents various memory safety bugs, for example, null pointer
 dereferences are eliminated by distinguishing between nullable and non
 nullable types, nullable types are not allowed by default, array out-of-bound
 accesses are prevented by runtime checks that are added by the compiler, and
-Rust's ownership system prevents dangling pointers.
+Rust's borrowing rules prevents dangling pointers.
 Further, Rust allows developers to
 sacrafice the memory safety guarantees for stronger control over the program,
 for example to directly manage low-level systems resources such as memory.

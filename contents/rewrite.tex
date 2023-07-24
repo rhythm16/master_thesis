@@ -156,7 +156,7 @@ One of the modules is \code{VMInfo}, it includes the definition of the type
 \code{VMInfo}, which stores information of a VM including its VMID, state, and
 an array of VCPU states. The module also contains methods for reading the VMID,
 setting the state of the VM, etc.
-Another module aggregates the \rustcore{} metadata structures into a single big
+There is another module that aggregates the \rustcore{} metadata structures into a single big
 structure \code{RcoreMetadata} (line 1 in \autoref{lst:rcoremetadata}) to simplify
 the memory used by these metadata.
 Some fields in \code{RcoreMetadata} are shared by all CPU cores, while others are per CPU.
@@ -311,7 +311,7 @@ FFIs are used for calling longer assembly routines, below is a list showing the 
 \item \code{\_\_guest\_enter}: context switching general purpose registers and entering guest VMs.
 \item \code{dcache\_clean\_inval}: invalidate cache of the input memory range.
 \item \code{acquire\_lock} and \code{release\_lock}: \rustcore{}'s spinlock primitive that spin on an address using an assembly loop.
-\item \code{tlb\_flush\_ipa}: flushes the input intermediate physical address range of the vmid given.
+\item \code{tlb\_flush\_ipa}: flushes the TLB of the input intermediate physical address range of the vmid given.
 \end{itemize}
 
 \textbf{KVM ARM Per-CPU Variables in Rust.}
@@ -360,7 +360,7 @@ Rpi-4B.
 
 \begin{figure}[hbtp]
     \includegraphics[scale=0.60]{figures/overlap.pdf}
-    \caption{Kcore overlaps the unusable hole on Rpi-4B}
+    \caption{KCore overlaps the unusable hole on Rpi-4B}
     \label{fig:overlap}
 \end{figure}
 
