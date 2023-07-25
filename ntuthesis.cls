@@ -762,7 +762,7 @@
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{figures/defense.pdf}
+    \includegraphics[width=\textwidth, trim=0 0 0 -1cm]{figures/defense.pdf}
 \end{figure}
 
 %  \begin{singlespace}
