@@ -698,7 +698,7 @@
       \raisebox{-\paperheight}{
       \put(\LenToUnit{-1cm},\LenToUnit{1cm}){
       \fboxrule=0pt\fboxsep=0pt\framebox[0pt][r]{
-        \href{http://dx.doi.org/#1}{doi:#1}
+        \href{http://dx.doi.org/#1}{\color{black}doi:#1}
 }}}}}}}
 
 % [生成封面]
