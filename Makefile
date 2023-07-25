@@ -5,7 +5,7 @@ FIGS = $(wildcard figures/*.pdf figures/*.png figures/*.svg)
 
 .PHONY: all clean
 
-$(PAPER).pdf: $(TEX) $(BIB) $(FIGS) back/* front/* contents/*
+$(PAPER).pdf: $(TEX) $(BIB) $(FIGS) back/* front/* contents/* ntuthesis.cls
 	echo $(FIGS)
 	xelatex -shell-escape $(PAPER)
 	bibtex $(PAPER)
