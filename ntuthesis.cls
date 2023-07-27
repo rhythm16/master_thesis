@@ -760,7 +760,7 @@
   \addcontentsline{toc}{chapter}{\ntu@verificationletter}
 %  \includepdf[pages=-]{figures/defense.pdf}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth, trim=0 0 0 -1cm]{figures/defense.pdf}
 \end{figure}
