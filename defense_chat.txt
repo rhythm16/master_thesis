@@ -1,0 +1,13 @@
+Jim Huang
+11:44 AM
+(乍聽之下，好像用 Rust 重寫後，考試就醫百分了 XD)
+Q2: 如何確保本實作的 functional safety?
+Jim Huang
+11:48 AM
+Q3: Rust 的自動化驗證機制 (formal method?)
+Jim Huang
+11:54 AM
+https://www.cvedetails.com/vulnerability-list/vendor_id-6276/cvssscoremin-7/cvssscoremax-7.99/XEN.html
+Jim Huang
+12:04 PM
+http://www.cs.yale.edu/homes/shao-zhong/ # 有好幾篇論文可 cite
