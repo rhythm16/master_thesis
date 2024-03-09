@@ -13,5 +13,5 @@ $(PAPER).pdf: $(TEX) $(BIB) $(FIGS) back/* front/* contents/* ntuthesis.cls
 	xelatex -shell-escape $(PAPER)
 
 clean:
-	rm -f *.aux *.bbl *.blg *.lof *.log *.lot *.out *.toc $(PAPER).pdf
+	rm -rf *.aux *.bbl *.blg *.lof *.log *.lot *.out *.toc _minted-main $(PAPER).pdf
 
